@@ -1,4 +1,61 @@
-Storage for World of Tanks mods.
+# Storage for World of Tanks mods
+
+This repo is a Fork of Yury Polyacov's PYmods original, meant to publish my new version for mod_VoiceOverrider which includes new features and updates/fixes.
+
+## VoiceOverrider
+
+### Enhancements
+
+* **Feature**: Instead of allowing to chose only one voice that will be globally used on every battle, allow for the use of up to 20 alternative voices, which are changed randomly before every battle. The selection uses a user-provided weight distribution, all configurable in-game.
+* **Feature**: Use the game's internals to probe available voices and add those missing from VoiceOverrider's list, allowing for newly added voices or other voice mod's to appear at the end of the list.
+* **Feature**: Sorted voice options, making it easier to find the desired voice.
+* **Feature**: Special voice options. "None (Silent)" option disables (mutes) the voices and "No Override" does not change the voice, respecting the voice that would normally be used in the battle.
+* **Update**: Support all of the voices included up to 1.29.1.0 (latest as of 07/28/2025, includes Duke Nukem and Lara Croft)
+* **Fixes**: Tweaks to voice names and removed typos.
+
+### TO-DOs
+
+* **Bug**: There is a bug where playing the National voices may cause further attempts to play voices to not work. Only affects the configuration screen, voices still work throughout the game.
+* **Enhancement**: The voice of each nation appears at the end with the discovered voices, upgrade them to first-class and group them at the start of the lists.
+* **Enhancement**: Better grouping for "bloggers", or community leaders, so they can be found easier. Some voices are grouped using prefixes that are a bit cryptic.
+* **Help needed**: Russian translations have not been updated or checked for typos (help needed, I don't speak Russian).
+* **WoT bug**: HandOfBlood, a voice in german that seems quite fun but is not available on the NA installation appears as an option because the NA configuration says it is included, but the bank file is not present.
+* **Feature**: New overriding method: selecting a voice for a given tank
+* **Feature**: Overriding with a given voice uppon meeting certain conditions, such as a specific voice, nation or genre (male/female)
+
+### Usage
+
+#### Installation
+
+* Download the `mod_VoiceOverrider.zip` file from the Releases section.
+* Unzip content into the `mods` directory of your World of Tanks installation.
+
+#### Configuration access
+
+* Run the game
+* Open the configuration window by clickinng on the lower-left **`◊◊`** mods button and then on **PYmods**
+
+#### Default voice override
+
+* As in the original VoiceOverrider, you will find a first voice selector, the Default, where you can use this to set a global override.
+  * For the original global override to take effect, the selectors bellow for the alternative voices must all have a weight of 0
+
+#### Alternative voices
+
+* If you want up to 21 alternative voices to be selected randomly for each battle, select the voices on the left column, and the weights on the right.
+* Weights work this way:
+  * TLDR: just give more weight to those you really like and want to come up more often, and be careful not to go too low on those you don't want that often because the chance they appear may become way low and you may almost never hear them.
+  * the probability of an alternative voice to be used on a given battle is `weight_sum / voice_weight`, so for example:
+    * if all voices have the same weight, the chance of any of them to be selected is the same for all.
+    * a weight of 0 means no chance, so that deactivates that option.
+    * if you have two voices with a weight of 10, three with 5, five with 1 and the rest with 0, the chances will be:
+      * sum of weights: `2 * 10 + 3 * 5 + 5 * 1 = 40`
+      * chances: `10/40, 10/40, 5/40, 5/40, 5/40, 1/40, 1/40, 1/40, 1/40, 1/40`
+      * chances (simplified): `1/4, 1/4, 1/8, 1/8, 1/8, 1/40, 1/40, 1/40, 1/40, 1/40`
+      * chances (percent): `25%, 25%, 12.5%, 12.5%, 12.5%, 2.5%, 2.5%, 2.5%, 2.5%, 2.5%`
+
+## Original PYmods Notes
+
 ```
 source/scripts:
   compiler.py - my modification of standard compileall which uses git calls to retrieve commit dates
