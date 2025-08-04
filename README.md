@@ -6,18 +6,20 @@ This repo is a Fork of Yury Polyacov's PYmods original, meant to publish my new 
 
 ### Enhancements
 
-* **Feature**: Instead of allowing to chose only one voice that will be globally used on every battle, allow for the use of up to 20 alternative voices, which are changed randomly before every battle. The selection uses a user-provided weight distribution, all configurable in-game.
+* **Feature**: Instead of allowing to chose only one voice that will be globally used on every battle, allow for the use of up to 20 alternative voices, which are changed randomly before every battle. The selection uses a user-provided weight distribution, all configurable in-game so you can have certain voices more often than others.
+* **Feature**: The national voice for each country can be manually selected as a voice option.
+* **Feature**: Special voice selections and filters: get a random female or male voice, "do nothing" (no override) mode, default voices and limit the voice selection to those consistent with the tank's nation.
 * **Feature**: Use the game's internals to probe available voices and add those missing from VoiceOverrider's list, allowing for newly added voices or other voice mod's to appear at the end of the list.
-* **Feature**: Sorted voice options, making it easier to find the desired voice.
+* **Feature**: To make it easier to find the desired voice, options are now better grouped and sorted, and are graphically marked with a flag of the language/country they belong to, plus a female mark if it is the case.
 * **Feature**: Special voice options. "None (Silent)" option disables (mutes) the voices and "No Override" does not change the voice, respecting the voice that would normally be used in the battle.
+* **Enhancement**: The voice of each nation appears at the end with the discovered voices, upgraded them to first-class and group them at the start of the lists.
+* **Enhancement**: Better grouping for "bloggers", or community leaders, so they can be found easier. Some voices are grouped using prefixes that are a bit cryptic.
 * **Update**: Support all of the voices included up to 1.29.1.0 (latest as of 07/28/2025, includes Duke Nukem and Lara Croft)
 * **Fixes**: Tweaks to voice names and removed typos.
 
 ### TO-DOs
 
 * **Bug**: There is a bug where playing the National voices may cause further attempts to play voices to not work. Only affects the configuration screen, voices still work throughout the game.
-* **Enhancement**: The voice of each nation appears at the end with the discovered voices, upgrade them to first-class and group them at the start of the lists.
-* **Enhancement**: Better grouping for "bloggers", or community leaders, so they can be found easier. Some voices are grouped using prefixes that are a bit cryptic.
 * **Help needed**: Russian translations have not been updated or checked for typos (help needed, I don't speak Russian).
 * **WoT bug**: HandOfBlood, a voice in german that seems quite fun but is not available on the NA installation appears as an option because the NA configuration says it is included, but the bank file is not present.
 * **Feature**: New overriding method: selecting a voice for a given tank
