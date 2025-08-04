@@ -532,11 +532,11 @@ class ConfigInterface(SimpleConfigInterface):
 
     def init(self):
         self.ID = '%(mod_ID)s'
-        self.version = '1.1.2-b (%(file_compile_date)s)'
-        self.author = 'by Polyacov_Yury (pupitetris)'
+        self.version = '2.0.0 (%(file_compile_date)s)'
+        self.author = 'by Arturo Espinosa (overhaul) and Polyacov_Yury'
         self.modsGroup = 'PYmods'
         self.modSettingsID = 'PYmodsGUI'
-        self.data = {'enabled': True, 'voice': 0, 'voice_use_tank_nation': False, 'music': 0}
+        self.data = {'enabled': True, 'voice': 0, 'voice_name': '', 'voice_use_tank_nation': False, 'music': 0}
         self.i18n = I18N
         self._set_default_voice_alt_conf()
 
