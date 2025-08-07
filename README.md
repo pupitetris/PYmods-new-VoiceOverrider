@@ -2,7 +2,9 @@
 
 This repo is a Fork of Yury Polyacov's PYmods original, meant to publish my new version for mod_VoiceOverrider which includes new features and updates/fixes.
 
-## VoiceOverrider
+## VoiceOverriderNG
+
+"New Generation" for VoiceOverrider, renamed so the overhauled version doesn't collide with the OG VoiceOverrider.
 
 ### Enhancements
 
@@ -29,7 +31,7 @@ This repo is a Fork of Yury Polyacov's PYmods original, meant to publish my new 
 
 #### Installation
 
-* Download the `mod_VoiceOverrider.zip` file from the Releases section.
+* Download the `mod_VoiceOverriderNG.zip` file from the Releases section.
 * Unzip content into the `mods` directory of your World of Tanks installation.
 
 #### Configuration access
@@ -88,7 +90,7 @@ source/scripts:
       mod_StatPaints.py - paints vehicles depending on their driver's WGR value
       mod_UT_announcer.py - frag, some medals and battle time sound notifier
       mod_VMTFix.py - Vehicle Model Transparency Fix - because transparent elements don't display on player vehicle
-      mod_VoiceOverrider.py - switches some switches in SoundGroups to make different voiceover versions appear
+      mod_VoiceOverriderNG.py - switches some switches in SoundGroups to make different voiceover versions appear
     /helpers/i18n:
       __init__.py - transforms helpers.i18n from a module to package and adds a mod loader to it
       _i18nDebugger.py - a simple localisation debugger
