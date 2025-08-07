@@ -8,7 +8,7 @@
         "mods/configs/PYmods/VoiceOverriderNG/VoiceOverriderNG.json": "res/configs/PYmods/VoiceOverriderNG/VoiceOverriderNG.json",
         "mods/configs/PYmods/VoiceOverriderNG/i18n/en.json": "res/configs/PYmods/VoiceOverriderNG/i18n/en.json",
         "mods/configs/PYmods/VoiceOverriderNG/i18n/ru.json": "res/configs/PYmods/VoiceOverriderNG/i18n/ru.json",
-        "mods/{GAME_VERSION}/*modsettingsapi*": "res/wotmods/*modsettingsapi*",
+        "mods/{GAME_VERSION}/*modssettingsapi*": "res/wotmods/*modssettingsapi*",
         "mods/{GAME_VERSION}/*modslistapi*": "res/wotmods/*modslistapi*",
         "mods/{GAME_VERSION}/OpenModsCore.wotmod": "core/build/wotmods/OpenModsCore.wotmod",
         "mods/{GAME_VERSION}/PYmods/VoiceOverriderNG.wotmod": "build/wotmods/PYmods/VoiceOverriderNG.wotmod"
