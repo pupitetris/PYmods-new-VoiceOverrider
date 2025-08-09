@@ -545,8 +545,10 @@ class ConfigInterface(SimpleConfigInterface):
         self._set_voice_modes()
 
 
-    def _data_voice_set_by_sel(self, sel_key, name_key):
-        self.data[name_key] = self.voice_modes[self.data[sel_key]].name
+    def _data_voice_set_by_sel(self, sel_key, name_key, src=None):
+        if src is None:
+            src = self.data
+        self.data[name_key] = self.voice_modes[src[sel_key]].name
 
 
     def _data_voice_set_by_name(self, sel_key, name_key):
@@ -559,23 +561,24 @@ class ConfigInterface(SimpleConfigInterface):
 
 
     def readData(self, quiet=True):
-        super(ConfigInterface, self).readData()
+        super(ConfigInterface, self).readData(quiet)
 
         self._data_voice_set_by_name('voice', 'voice_name')
 
-        for i in range(0, self.NUM_VOICE_ALTS + 1):
+        for i in range(1, self.NUM_VOICE_ALTS + 1):
             num = str(i)
             self._data_voice_set_by_name('voiceAlt_' + num + '_sel',
                                          'voiceAlt_' + num + '_name')
                     
                     
     def onApplySettings(self, settings):
-        self._data_voice_set_by_sel('voice', 'voice_name')
+        self._data_voice_set_by_sel('voice', 'voice_name', src=settings)
 
-        for i in range(0, self.NUM_VOICE_ALTS + 1):
+        for i in range(1, self.NUM_VOICE_ALTS + 1):
             num = str(i)
             self._data_voice_set_by_sel('voiceAlt_' + num + '_sel',
-                                        'voiceAlt_' + num + '_name')
+                                        'voiceAlt_' + num + '_name',
+                                        src=settings)
 
         super(ConfigInterface, self).onApplySettings(settings)
 
@@ -771,7 +774,6 @@ class ConfigInterface(SimpleConfigInterface):
                 return True
             if mode.name[:6] == 'random':
                 mode = self.selectRandomMode(mode.name[7:], nation)
-                LOG_NOTE('random voice mode: ', mode)
             if mode.name == 'mute':
                 self._enableVoiceSounds(soundGroups, False)
                 return soundModes.setNationalMappingByMode('default')
@@ -841,11 +843,6 @@ def new_setPlayerVehicle(base, self, vehiclePublicInfo, isPlayerVehicle, *args, 
     nation = nations.NAMES[VehicleDescr(vehiclePublicInfo.compDescr).type.id[0]]
     voice_mode = g_config.selectAltVoiceMode(nation)
     g_config.setSystemValue(nation, voice_mode)
-    LOG_NOTE('voice mode: ', voice_mode)
-    LOG_NOTE('vehicle nation: ', nation)
-    LOG_NOTE('vehiclePublicInfo: ', vehiclePublicInfo)
-    LOG_NOTE('compDescr: ', vehiclePublicInfo.compDescr)
-    LOG_NOTE('VehicleDescr: ', VehicleDescr(vehiclePublicInfo.compDescr))
 
     self._SpecialSoundCtrl__arenaMusicSetup = musicSetup = arena.arenaType.wwmusicSetup.copy()
     tag = g_config.music_modes[g_config.data['music']].tag
