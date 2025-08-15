@@ -2,6 +2,7 @@
     "enabled": true,
     "ext": ".wotmod",
     "files": {
-        "res/scripts/client/gui/mods/mod_VoiceOverriderNG.pyc": "build/scripts/client/gui/mods/mod_VoiceOverriderNG.pyc"
+        "res/scripts/client/gui/mods/mod_VoiceOverriderNG.pyc": "build/scripts/client/gui/mods/mod_VoiceOverriderNG.pyc",
+        "res/scripts/client/gui/mods/mod_VoiceOverriderNG/**": "build/scripts/client/gui/mods/mod_VoiceOverriderNG/**"
     }
 }
