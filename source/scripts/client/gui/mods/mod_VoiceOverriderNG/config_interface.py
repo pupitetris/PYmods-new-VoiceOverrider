@@ -30,6 +30,7 @@ class ConfigInterface(SimpleConfigInterface):
 
         self.voice_modes = []
         self._voice_modes_by_name = {}
+        self.currentVoiceMode = None
 
         self.music_modes = MUSIC_MODES
 
@@ -71,22 +72,28 @@ class ConfigInterface(SimpleConfigInterface):
 
 
     # Iterate over keys that try_voice_mode didn't remove:
-    def _add_missing_mode_descs(self, mode_descs):
+    def _missing_mode_descs(self, mode_descs):
+        missing_modes = []
         for name in sorted(mode_descs.keys()):
             if name[:4] == 'User':
                 continue
             mode_desc = mode_descs[name]
             LOG_NOTE('adding: ', mode_desc)
-            self.voice_modes.append(VoiceMode(name, name))
             lang = mode_desc.voiceLanguage
-            self._voice_options.append('+ ' + (lang if lang is not None and len(lang) > 0 else name))
+            label = '+ ' + (lang if lang is not None and len(lang) > 0 else name)
+            mode = VoiceMode(name, name, label=label)
+            missing_modes.append(mode)
+        return missing_modes
 
 
     def _set_voice_modes(self):
         mode_descs = { name: mode_desc for name, mode_desc in SoundGroups.g_instance.soundModes.modes.items() }
         self.voice_modes = filter(lambda mode: self._try_voice_mode(mode, mode_descs), VOICE_MODES);
-        self._voice_options = [ self._get_mode_label(mode) for mode in self.voice_modes ]
-        self._add_missing_mode_descs(mode_descs)
+        for mode in self.voice_modes:
+            mode.label = self._get_mode_label(mode)
+        self.voice_modes += self._missing_mode_descs(mode_descs)
+
+        self._voice_options = [ mode.label for mode in self.voice_modes ]
         self._voice_modes_by_name = { mode.name: mode for mode in self.voice_modes }
         self._voice_modes_map = { mode.name: idx for idx, mode in enumerate(self.voice_modes) }
 
@@ -372,7 +379,7 @@ class ConfigInterface(SimpleConfigInterface):
         return success
 
 
-    def _selectAltVoiceMode(self):
+    def _selectAltVoiceModeByWeight(self):
         weight_sum = sum(w for key, w in self.data.items() if key[0:9] == 'voiceAlt_' and key[-7:] == '_weight')
         if weight_sum == 0:
             return self.data['voice']
@@ -389,14 +396,20 @@ class ConfigInterface(SimpleConfigInterface):
         return self.data['voice']
         
 
-    def selectAltVoiceMode(self, nation=None):
+    def _selectAltVoiceMode(self, nation=None):
         nation = self._nation_canon(nation)
 
         retries = 1000
         while retries > 0:
             retries -= 1
-            mode_idx = self._selectAltVoiceMode()
+            mode_idx = self._selectAltVoiceModeByWeight()
             mode = self.voice_modes[mode_idx]
             if self._mode_nation_elegible(nation, mode):
             	return mode
         return self.voice_modes[self.data['voice']]
+
+
+    def selectAltVoiceMode(self, nation=None):
+        mode = self._selectAltVoiceMode(nation)
+        self.currentVoiceMode = mode
+        return mode

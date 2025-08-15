@@ -15,9 +15,10 @@ VoiceMode = namedtuple('VoiceMode', [
     'lang',
     'female',
     'synthetic',
-    'icon'
+    'icon',
+    'label'
 ])
-VoiceMode.__new__.__defaults__ = (None, None, False, None, False, False, None)
+VoiceMode.__new__.__defaults__ = (None, None, False, None, False, False, None, None)
 MusicMode = namedtuple('MusicMode', ['name', 'tag'])
 Nation = namedtuple('Nation', ['name', 'lang', 'flag'])
 
