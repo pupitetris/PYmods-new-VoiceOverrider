@@ -50,8 +50,8 @@ def _castOrNone(value, _type):
 
 
 class VoiceMode(object):
-    def __init__(self, name, languageMode=None, national=False, lang=None,
-                 female=False, synthetic=False, icon=None, label=None, enabled=True, idx=None):
+    def __init__(self, name, languageMode=None, national=False, lang=None, female=False,
+                 synthetic=False, icon=None, label=None, short_label=None, enabled=True, idx=None):
 
         self.idx = _castOrNone(idx, int)
         self.name = _cast(name, str)
@@ -70,7 +70,11 @@ class VoiceMode(object):
             raise TypeError('icon ' + str(icon) + ' expected as str, list or None but is ' + str(type(icon)))
 
         self.label = _castOrNone(label, str)
+        self.short_label = _castOrNone(short_label, str)
         self.enabled = _cast(enabled, bool)
+
+        self._i18n = None
+        self._i18n_short = None
 
 
     def __repr__(self):
@@ -84,6 +88,7 @@ class VoiceMode(object):
             ', synthetic=' + repr(self.synthetic) + \
             ', icon=' + repr(self.icon) + \
             ', label=' + repr(self.label) + \
+            ', short_label=' + repr(self.label) + \
             ', enabled=' + repr(self.enabled) + \
             ')'
 
@@ -103,21 +108,31 @@ class VoiceMode(object):
         return None
 
 
-    def _get_label_with_gender(self, i18n):
-        return self.get_label(i18n) + (' <b>♂</b>' if self.female else '')
+    def _get_i18n_label(self, i18n, short):
+        i18n_prefix = 'voice_short_%s' if short else 'UI_setting_voice_%s'
+        return i18n.get(i18n_prefix % self.name, self.name).replace('*', '')
 
 
-    def get_label(self, i18n=None, with_gender=False):
+    def _get_label_with_gender(self, i18n, short):
+        return self.get_label(i18n, short, False) + (' <b>♂</b>' if self.female else '')
+
+
+    def get_label(self, i18n=None, short=False, with_gender=False):
         if with_gender:
-            return self._get_label_with_gender(i18n)
-        if self.label is not None:
+            return self._get_label_with_gender(i18n, short)
+        if not short and self.label is not None:
             return self.label
+        if short and self.short_label is not None:
+            return self.short_label
 
-        if i18n is None:
-            LOG_WARNING('mode get_label but label not set', self)
-            return self.name
+        if self._i18n is None:
+            if i18n is None:
+                LOG_WARNING('mode get_label but label not set', self)
+                return self.name
+            self._i18n = self._get_i18n_label(i18n, False)
+            self._i18n_short = self._get_i18n_label(i18n, True)
 
-        label = i18n.get('UI_setting_voice_%s' % self.name, self.name).replace('*', '')
+        label = self._i18n_short if short else self._i18n
 
         result = re.search('\(([^)]+)\)$', label)
         if result is not None:
@@ -126,7 +141,10 @@ class VoiceMode(object):
                 offset = -1 * len(result.group(0))
                 label = label[:offset] + FLAGS[lang_name]
 
-        self.label = label
+        if short:
+            self.short_label = label
+        else:
+            self.label = label
 
         return label
 

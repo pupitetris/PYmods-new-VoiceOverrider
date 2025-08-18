@@ -92,7 +92,7 @@ class VoGUI(object):
         res = _getDynRes(R.images.gui.maps.icons.tankmen.icons.big, icon)
         image_url = backport.image(res())
 
-        label = voice_mode.get_label()
+        label = voice_mode.get_label(short=True)
         text = '<p><font face="$FieldFont" size="16" color="#FFFFFF">' + label + '</font></p>'
 
         g_guiFlash.updateComponent(self.ID_icon, {'image': image_url})
