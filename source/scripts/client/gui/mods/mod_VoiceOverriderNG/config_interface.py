@@ -409,7 +409,8 @@ class ConfigInterface(SimpleConfigInterface):
         mode = self._selectAltVoiceMode(nation)
         if mode.name[:6] == 'random':
             mode = self.selectRandomMode(mode.name[7:], nation)
-        self.currentVoiceMode = mode
+        if not force:
+            self.currentVoiceMode = mode
         return mode
 
 
