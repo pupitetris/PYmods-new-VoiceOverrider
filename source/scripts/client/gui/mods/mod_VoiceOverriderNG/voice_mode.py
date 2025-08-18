@@ -247,7 +247,7 @@ VOICE_MODES = [
     VoiceMode('commander_mosfilm_Trus', 'commander_mosfilm_Trus', lang='RU'),
     VoiceMode('commander_mosfilm_Balbes', 'commander_mosfilm_Balbes', lang='RU'),
     VoiceMode('commander_mosfilm_Bivaliy', 'commander_mosfilm_Bivaliy', lang='RU'),
-    VoiceMode('handOfBlood', 'handOfBlood', lang='DE', icon='HandOfBlood'),
+    VoiceMode('handOfBlood', 'handOfBlood', lang='DE', icon='HandOfBlood', enabled=False),
     VoiceMode('hannelore23_en', 'hannelore23_en', lang='EN', female=True, icon='wt_2023_hannelore'),
     VoiceMode('hannelore23_ru', 'hannelore23_ru', lang='RU', female=True, icon='wt_2023_hannelore'),
     VoiceMode('hannelore23_cn', 'hannelore23_cn', lang='ZH_CH', female=True, icon='wt_2023_hannelore'),
