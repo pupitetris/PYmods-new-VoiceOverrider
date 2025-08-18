@@ -2,14 +2,13 @@ __modID__ = '%(mod_ID)s'
 __date__ = '%(file_compile_date)s'
 __version__ = '2.0.2 ' + __date__
 
-from debug_utils import LOG_DEBUG, LOG_ERROR, LOG_NOTE, LOG_WARNING
 from gui.battle_control import avatar_getter
 from gui.game_control.special_sound_ctrl import SpecialSoundCtrl
 from items.vehicles import VehicleDescr
 import nations
 
-
 from OpenModsCore import Analytics, overrideMethod, events
+from debug_utils import LOG_DEBUG, LOG_ERROR, LOG_NOTE, LOG_WARNING
 
 from .config_interface import ConfigInterface
 from .vo_gui import VoGUI

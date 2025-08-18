@@ -17,7 +17,6 @@ ICON_HEIGHT = 118
 
 
 def _getDynRes(res, path):
-    LOG_WARNING('VoiceOverrider _getDynRes', res, path)
     comps = path.split('/', 1)
     if len(comps) == 1:
         return res.dyn(path)
@@ -84,15 +83,11 @@ class VoGUI(object):
 
 
     def setCommander(self, voice_mode):
-        LOG_WARNING('VoiceOverrider setCommander', voice_mode)
-
         icon = voice_mode.icon
         if type(icon) == list:
             icon = icon[random.randint(0, len(icon) - 1)]
         if icon is None or type(icon) != str or icon == '':
             icon = 'girl_empty' if voice_mode.female else 'tankman'
-
-        LOG_WARNING('VoiceOverrider setCommander icon', icon)
 
         res = _getDynRes(R.images.gui.maps.icons.tankmen.icons.big, icon)
         image_url = backport.image(res())
