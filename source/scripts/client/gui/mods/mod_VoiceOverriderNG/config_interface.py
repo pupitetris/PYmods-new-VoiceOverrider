@@ -1,9 +1,8 @@
-# noinspection PyArgumentList,SpellCheckingInspection
+# -*- coding: utf-8 -*-
 
 from collections import namedtuple
 import itertools
 import random
-import re
 
 import BigWorld
 import Settings
@@ -13,8 +12,19 @@ from gui.shared.personality import ServicesLocator
 
 from OpenModsCore import SimpleConfigInterface
 
-from .voice_mode import VoiceMode, VOICE_MODES, MUSIC_MODES, FLAGS, NATIONS, NATIONS_BY_LANG, NATIONS_AVAILABLE_NAMES
+from .voice_mode import VoiceMode, VOICE_MODES, MUSIC_MODES, NATIONS, NATIONS_BY_LANG, NATIONS_AVAILABLE_NAMES
 from .i18n import I18N
+
+
+DEFAULT_POSITION = -1
+
+
+def getInt(n, default):
+    try:
+        return int(float(n))
+    except (ValueError, TypeError) as e:
+        pass
+    return default
 
 
 class ConfigInterface(SimpleConfigInterface):
@@ -24,12 +34,13 @@ class ConfigInterface(SimpleConfigInterface):
 
     def __init__(self):
         self._voice_enabled = True
-        self._voice_options = []
+        self._voice_labels = []
         self._previewSound = None
         self._previewNations = []
 
         self.voice_modes = []
         self._voice_modes_by_name = {}
+        self._voice_modes_map = {}
         self.currentVoiceMode = None
 
         self.music_modes = MUSIC_MODES
@@ -38,40 +49,16 @@ class ConfigInterface(SimpleConfigInterface):
 
 
     def _try_voice_mode(self, mode, mode_descs):
-        if mode.synthetic:
-            return True
+        res = mode.is_available(mode_descs)
+        if not res is None:
+            return res
         
-        if mode.languageMode is not None:
-            if mode.languageMode in mode_descs:
-                del mode_descs[mode.languageMode]
-                return True
-            if mode.languageMode in NATIONS_BY_LANG:
-                return True
-            LOG_WARNING('missing: ', mode)
-            return False
-
         res = self.setSystemValue(mode_key=mode)
         LOG_NOTE('special: ', res, mode)
         return res
 
 
-    def _get_mode_label(self, mode):
-        label = self.i18n.get('UI_setting_voice_%s' % mode.name, mode.name).replace('*', '')
-
-        result = re.search('\(([^)]+)\)$', label)
-        if result is not None:
-            lang_name = result.group(1)
-            if lang_name in FLAGS:
-                offset = -1 * len(result.group(0))
-                label = label[:offset] + FLAGS[lang_name]
-                
-        if mode.female:
-            label += ' <b>♂</b>'
-
-        return label
-
-
-    # Iterate over keys that try_voice_mode didn't remove:
+    # Iterate over keys that _try_voice_mode/is_available didn't remove from mode_descs:
     def _missing_mode_descs(self, mode_descs):
         missing_modes = []
         for name in sorted(mode_descs.keys()):
@@ -88,14 +75,14 @@ class ConfigInterface(SimpleConfigInterface):
 
     def _set_voice_modes(self):
         mode_descs = { name: mode_desc for name, mode_desc in SoundGroups.g_instance.soundModes.modes.items() }
+        VOICE_MODES.sort(key=lambda mode: self.i18n.get('UI_setting_voice_%s' % mode.name, mode.name))
         self.voice_modes = filter(lambda mode: self._try_voice_mode(mode, mode_descs), VOICE_MODES);
-        for mode in self.voice_modes:
-            mode.label = self._get_mode_label(mode)
         self.voice_modes += self._missing_mode_descs(mode_descs)
 
-        self._voice_options = [ mode.label for mode in self.voice_modes ]
+        for idx, mode in enumerate(self.voice_modes):
+            mode.idx = idx
+        self._voice_labels = [ mode.get_label(self.i18n, with_gender=True) for mode in self.voice_modes ]
         self._voice_modes_by_name = { mode.name: mode for mode in self.voice_modes }
-        self._voice_modes_map = { mode.name: idx for idx, mode in enumerate(self.voice_modes) }
 
 
     def _set_default_voice_alt_conf(self):
@@ -113,11 +100,21 @@ class ConfigInterface(SimpleConfigInterface):
     def init(self):
         self.ID = 'VoiceOverriderNG'
         self.i18n = I18N
-        self.data = {'enabled': True, 'voice': 0, 'voice_name': '', 'voice_use_tank_nation': False, 'music': 0}
         self.author = 'by Arturo Espinosa (overhaul) and Polyacov_Yury'
         self.version = '2.0.2 %(file_compile_date)s'
         self.modsGroup = 'PYmods'
         self.modSettingsID = 'PYmodsGUI'
+
+        self.data = {
+            'enabled': True,
+            'icon_enabled': True,
+            'icon_x': DEFAULT_POSITION,
+            'icon_y': DEFAULT_POSITION,
+            'music': 0,
+            'voice': 0,
+            'voice_name': '',
+            'voice_use_tank_nation': False,
+        }
 
         self._set_default_voice_alt_conf()
         super(ConfigInterface, self).init()
@@ -128,14 +125,15 @@ class ConfigInterface(SimpleConfigInterface):
         if src is None:
             src = self.data
         idx = src[sel_key]
-        self.data[name_key] = self.voice_modes[idx].name
+        if idx < len(self.voice_modes):
+            self.data[name_key] = self.voice_modes[idx].name
 
 
     def _data_voice_set_by_name(self, sel_key, name_key):
         if name_key in self.data: 
             name = self.data[name_key]
             if name in self._voice_modes_by_name:
-                self.data[sel_key] = self._voice_modes_map[name]
+                self.data[sel_key] = self._voice_modes_by_name[name].idx
                 return
         self._data_voice_set_by_sel(sel_key, name_key)
 
@@ -167,7 +165,7 @@ class ConfigInterface(SimpleConfigInterface):
         column1 = [
             self.tb.createOptions(
                 'voice',
-                self._voice_options,
+                self._voice_labels,
                 width=350,
                 button={'iconSource': '../maps/icons/buttons/sound.png'}),
             self.tb.createControl('voice_use_tank_nation'),
@@ -177,9 +175,8 @@ class ConfigInterface(SimpleConfigInterface):
 
         column2 = [
             self.tb.createOptions(
-                'music', [self.i18n['UI_setting_music_%s' % mode.name] for mode in self.music_modes]),
-            self.tb.createEmpty(),
-            self.tb.createEmpty(),
+                'music', [self.i18n['UI_setting_music_%s' % music_mode.name] for music_mode in self.music_modes]),
+            self.tb.createControl('icon_enabled'),
             self.tb.createLabel('voiceAlt_weights'),
             self.tb.createSlider('voiceAlt_0_weight', 0, self.NUM_VOICE_ALTS * self.NUM_VOICE_ALTS, 1,
                                  button={
@@ -193,7 +190,7 @@ class ConfigInterface(SimpleConfigInterface):
             column1.append(
                 self.tb.createOptions(
                     'voiceAlt_' + num + '_sel',
-                    self._voice_options,
+                    self._voice_labels,
                     width=350,
                     button={'iconSource': '../maps/icons/buttons/sound.png'})
             )
@@ -222,7 +219,7 @@ class ConfigInterface(SimpleConfigInterface):
                 mode_key = value
             self.playPreviewSound(mode_key)
         elif vName == 'voiceAlt_0_weight':
-            mode = self.selectAltVoiceMode()
+            mode = self.selectAltVoiceMode(force=True)
             self.playPreviewSound(mode)
 
 
@@ -305,9 +302,7 @@ class ConfigInterface(SimpleConfigInterface):
             mode = self.voice_modes[rand]
             if mode.synthetic:
                 continue
-            if female is None:
-                return mode
-            if mode.female == female:
+            if female is None or mode.female == female:
                 return mode
 
 
@@ -352,8 +347,6 @@ class ConfigInterface(SimpleConfigInterface):
         if mode.synthetic:
             if mode.name == 'nothing':
                 return True
-            if mode.name[:6] == 'random':
-                mode = self.selectRandomMode(mode.name[7:], nation)
             if mode.name == 'mute':
                 self._enableVoiceSounds(soundGroups, False)
                 return soundModes.setNationalMappingByMode('default')
@@ -409,7 +402,26 @@ class ConfigInterface(SimpleConfigInterface):
         return self.voice_modes[self.data['voice']]
 
 
-    def selectAltVoiceMode(self, nation=None):
+    def selectAltVoiceMode(self, nation=None, force=False):
+        if not force and self.currentVoiceMode is not None:
+            return self.currentVoiceMode
+
         mode = self._selectAltVoiceMode(nation)
+        if mode.name[:6] == 'random':
+            mode = self.selectRandomMode(mode.name[7:], nation)
         self.currentVoiceMode = mode
         return mode
+
+
+    def iconEnabled(self):
+        return bool(self.data.get('icon_enabled', True))
+
+
+    def iconGetPosition(self):
+        return (getInt(self.data.get('icon_x'), DEFAULT_POSITION),
+                getInt(self.data.get('icon_y'), DEFAULT_POSITION))
+
+
+    def iconSetPosition(self, x, y):
+        self.data['icon_x'] = getInt(x, DEFAULT_POSITION)
+        self.data['icon_y'] = getInt(y, DEFAULT_POSITION)

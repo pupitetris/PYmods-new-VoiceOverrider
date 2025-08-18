@@ -1,24 +1,14 @@
 from collections import namedtuple
+import re
 
 from gui.impl import backport
 from gui.impl.gen import R
 from gui.shared.formatters import icons
 import nations
 
-from .i18n import I18N
+from debug_utils import LOG_DEBUG, LOG_ERROR, LOG_NOTE, LOG_WARNING
 
 
-VoiceMode = namedtuple('VoiceMode', [
-    'name',
-    'languageMode',
-    'national',
-    'lang',
-    'female',
-    'synthetic',
-    'icon',
-    'label'
-])
-VoiceMode.__new__.__defaults__ = (None, None, False, None, False, False, None, None)
 MusicMode = namedtuple('MusicMode', ['name', 'tag'])
 Nation = namedtuple('Nation', ['name', 'lang', 'flag'])
 
@@ -47,12 +37,106 @@ FLAGS = {
 }
 
 
+def _cast(value, _type):
+    if type(value) != _type:
+        raise TypeError('value ' + repr(value) + ' expected as ' + str(_type) + ' but is ' + str(type(value)))
+    return _type(value)
+
+
+def _castOrNone(value, _type):
+    if value is None:
+        return None
+    return _cast(value, _type)
+
+
+class VoiceMode(object):
+    def __init__(self, name, languageMode=None, national=False, lang=None,
+                 female=False, synthetic=False, icon=None, label=None, enabled=True, idx=None):
+
+        self.idx = _castOrNone(idx, int)
+        self.name = _cast(name, str)
+        self.languageMode = _castOrNone(languageMode, str)
+        self.national = _cast(national, bool)
+
+        self.lang = lang
+        if lang is not None and lang not in NATIONS_BY_LANG:
+            raise ValueError('lang ' + str(lang) + ' not valid')
+
+        self.female = _cast(female, bool)
+        self.synthetic = _cast(synthetic, bool)
+
+        self.icon = icon
+        if icon is not None and type(icon) != str and type(icon) != list:
+            raise TypeError('icon ' + str(icon) + ' expected as str, list or None but is ' + str(type(icon)))
+
+        self.label = _castOrNone(label, str)
+        self.enabled = _cast(enabled, bool)
+
+
+    def __repr__(self):
+        return 'VoiceMode(' + \
+            'idx=' + repr(self.idx) + \
+            ', name=' + repr(self.name) + \
+            ', languageMode=' + repr(self.languageMode) + \
+            ', national=' + repr(self.national) + \
+            ', lang=' + repr(self.lang) + \
+            ', female=' + repr(self.female) + \
+            ', synthetic=' + repr(self.synthetic) + \
+            ', icon=' + repr(self.icon) + \
+            ', label=' + repr(self.label) + \
+            ', enabled=' + repr(self.enabled) + \
+            ')'
+
+
+    def is_available(self, mode_descs=None):
+        if self.synthetic:
+            return self.enabled
+        if self.languageMode is not None:
+            if mode_descs is not None and self.languageMode in mode_descs:
+                del mode_descs[self.languageMode]
+                return self.enabled
+            if self.languageMode in NATIONS_BY_LANG:
+                return self.enabled
+            LOG_WARNING('missing: ', self)
+            return False
+
+        return None
+
+
+    def _get_label_with_gender(self, i18n):
+        return self.get_label(i18n) + (' <b>♂</b>' if self.female else '')
+
+
+    def get_label(self, i18n=None, with_gender=False):
+        if with_gender:
+            return self._get_label_with_gender(i18n)
+        if self.label is not None:
+            return self.label
+
+        if i18n is None:
+            LOG_WARNING('mode get_label but label not set', self)
+            return self.name
+
+        label = i18n.get('UI_setting_voice_%s' % self.name, self.name).replace('*', '')
+
+        result = re.search('\(([^)]+)\)$', label)
+        if result is not None:
+            lang_name = result.group(1)
+            if lang_name in FLAGS:
+                offset = -1 * len(result.group(0))
+                label = label[:offset] + FLAGS[lang_name]
+
+        self.label = label
+
+        return label
+
+
 VOICE_MODES = [
     VoiceMode('nothing', synthetic=True),
     VoiceMode('mute', synthetic=True),
-    VoiceMode('random', synthetic=True),
-    VoiceMode('random_male', synthetic=True),
-    VoiceMode('random_female', synthetic=True),
+    VoiceMode('random', synthetic=True, icon='crewSkins/FoolsDay_Rngesus'),
+    VoiceMode('random_male', synthetic=True, icon='crewSkins/FoolsDay_Rngesus'),
+    VoiceMode('random_female', synthetic=True, icon='crewSkins/FoolsDay_Rngesus'),
     VoiceMode('default', 'default'),
     VoiceMode('default_male'),
     VoiceMode('default_female', female=True),
@@ -78,17 +162,17 @@ VOICE_MODES = [
     VoiceMode('national_sv_female', 'SV', lang='SV', female=True),
     VoiceMode('national_uk', 'UK', lang='UK'),
     VoiceMode('national_uk_female', 'UK', lang='UK', female=True),
-    VoiceMode('national_china', 'ZH_CH', lang='CN'),
-    VoiceMode('national_china_female', 'ZH_CH', lang='CN', female=True),
-    VoiceMode('valkyrie_male', 'valkyrie2', lang='JA', icon='japan-Welkin_Gunther'),
-    VoiceMode('valkyrie_female', 'valkyrie1', lang='JA', female=True, icon='japan-Carisa_Contzen'),
-    VoiceMode('sabaton', 'sabaton', lang='SV', icon='sweden-34'),
-    VoiceMode('buffon', 'buffon', lang='IT', icon='italy-Buffon'),
-    VoiceMode('offspring', 'offspring', lang='EN', icon='usa-44'),
+    VoiceMode('national_china', 'ZH_CH', lang='ZH_CH'),
+    VoiceMode('national_china_female', 'ZH_CH', lang='ZH_CH', female=True),
+    VoiceMode('valkyrie_male', 'valkyrie2', lang='JA', icon='japan_Welkin_Gunther'),
+    VoiceMode('valkyrie_female', 'valkyrie1', lang='JA', female=True, icon='japan_Carisa_Contzen'),
+    VoiceMode('sabaton', 'sabaton', lang='SV', icon='sweden_34'),
+    VoiceMode('buffon', 'buffon', lang='IT', icon='italy_Buffon'),
+    VoiceMode('offspring', 'offspring', lang='EN', icon='usa_44'),
     VoiceMode('celebrity2021_ru', 'celebrity2021_ru', lang='RU', icon='ny21_men'),
     VoiceMode('celebrity2021_en', 'celebrity2021_en', lang='EN', icon='ny21_men'),
-    VoiceMode('racer_ru', 'racer_ru', lang='RU', icon='race19-commander-b'),
-    VoiceMode('racer_en', 'racer_en', lang='EN', icon='race19-commander-a'),
+    VoiceMode('racer_ru', 'racer_ru', lang='RU', icon='race19_commander_b'),
+    VoiceMode('racer_en', 'racer_en', lang='EN', icon='race19_commander_a'),
     VoiceMode('20_LeBwa', 'ru1_Lebwa', lang='RU', icon='bob20_commander1_ru'),
     VoiceMode('20_Yusha', 'ru2_Yusha', lang='RU', icon='bob20_commander2_ru'),
     VoiceMode('20_Amway921', 'ru3_Amway921', lang='RU', icon='bob20_commander3_ru'),
@@ -120,20 +204,20 @@ VOICE_MODES = [
     VoiceMode('duke', 'duke', lang='EN', icon='twitch14'),
     VoiceMode('cobra', 'cobra', icon='twitch15'),
     VoiceMode('gagarin21', 'gagarin21', lang='RU', icon='gagarin21'),
-    VoiceMode('sabaton21', 'sabaton_v2', lang='SV', icon='sweden-38'),
+    VoiceMode('sabaton21', 'sabaton_v2', lang='SV', icon='sweden_38'),
     VoiceMode('armand21_en', 'armand21', lang='FR', icon='hunter_3'),
     VoiceMode('armand21_ru', 'armand21_ru', lang='RU', icon='hunter_3'),
-    VoiceMode('armand21_cn', 'armand21_cn', lang='CN', icon='hunter_3'),
+    VoiceMode('armand21_cn', 'armand21_cn', lang='ZH_CH', icon='hunter_3'),
     VoiceMode('letov21_en', 'letov21', lang='EN', icon='hunter_1'),
     VoiceMode('letov21_ru', 'letov21_ru', lang='RU', icon='hunter_1'),
-    VoiceMode('letov21_cn', 'letov21_cn', lang='CN', icon='hunter_1'),
+    VoiceMode('letov21_cn', 'letov21_cn', lang='ZH_CH', icon='hunter_1'),
     VoiceMode('elisa21_en', 'elisa21', lang='EN', female=True, icon='hunter_2'),
     VoiceMode('elisa21_ru', 'elisa21_ru', lang='RU', female=True, icon='hunter_2'),
-    VoiceMode('elisa21_cn', 'elisa21_cn', lang='CN', female=True, icon='hunter_2'),
+    VoiceMode('elisa21_cn', 'elisa21_cn', lang='ZH_CH', female=True, icon='hunter_2'),
     VoiceMode('krieger21_en', 'krieger21', lang='DE', icon='boss'),
     VoiceMode('krieger21_ru', 'krieger21_ru', lang='RU', icon='boss'),
-    VoiceMode('krieger21_cn', 'krieger21_cn', lang='CN', icon='boss'),
-    VoiceMode('yha_crew', 'yha_crew', lang='CN', icon=['YHA_commander', 'YHA_driver', 'YHA_gunner', 'YHA_loader', 'YHA_radio']),
+    VoiceMode('krieger21_cn', 'krieger21_cn', lang='ZH_CH', icon='boss'),
+    VoiceMode('yha_crew', 'yha_crew', lang='ZH_CH', icon=['YHA_commander', 'YHA_driver', 'YHA_gunner', 'YHA_loader', 'YHA_radio']),
     VoiceMode('celebrity2022_en', 'celebrity2022_en', lang='EN', icon='ny22_men'),
     VoiceMode('celebrity2022_ru', 'celebrity2022_ru', lang='RU', icon='ny22_men'),
     VoiceMode('quickyBaby', 'quickyBaby', lang='UK', icon='commander_quickybaby'),
@@ -141,16 +225,16 @@ VOICE_MODES = [
     VoiceMode('coverGirl22', 'coverGirl22', female=True, lang='EN', icon='gi_joe_2022_cover_girl'),
     VoiceMode('villanelle22_en', 'villanelle22_en', lang='EN', female=True, icon='wt_2022_hunter'),
     VoiceMode('villanelle22_ru', 'villanelle22_ru', lang='RU', female=True, icon='wt_2022_hunter'),
-    VoiceMode('villanelle22_cn', 'villanelle22_cn', lang='CN', female=True, icon='wt_2022_hunter'),
+    VoiceMode('villanelle22_cn', 'villanelle22_cn', lang='ZH_CH', female=True, icon='wt_2022_hunter'),
     VoiceMode('ermelinda22_en', 'ermelinda22_en', lang='EN', female=True, icon='wt_2022_boss'),
     VoiceMode('ermelinda22_ru', 'ermelinda22_ru', lang='RU', female=True, icon='wt_2022_boss'),
-    VoiceMode('ermelinda22_cn', 'ermelinda22_cn', lang='CN', female=True, icon='wt_2022_boss'),
+    VoiceMode('ermelinda22_cn', 'ermelinda22_cn', lang='ZH_CH', female=True, icon='wt_2022_boss'),
     VoiceMode('witches_commander_en', 'witches_commander_en', lang='EN', female=True, icon='hw22_witch_kordelia'),
     VoiceMode('witches_commander_ru', 'witches_commander_ru', lang='RU', female=True, icon='hw22_witch_kordelia'),
-    VoiceMode('witches_commander_cn', 'witches_commander_cn', lang='CN', female=True, icon='hw22_witch_kordelia'),
+    VoiceMode('witches_commander_cn', 'witches_commander_cn', lang='ZH_CH', female=True, icon='hw22_witch_kordelia'),
     VoiceMode('witches_crew_en', 'witches_crew_en', lang='EN', female=True, icon=['hw22_witch_aurelia', 'hw22_witch_deirdra', 'hw22_witch_sibilla']),
     VoiceMode('witches_crew_ru', 'witches_crew_ru', lang='RU', female=True, icon=['hw22_witch_aurelia', 'hw22_witch_deirdra', 'hw22_witch_sibilla']),
-    VoiceMode('witches_crew_cn', 'witches_crew_cn', lang='CN', female=True, icon=['hw22_witch_aurelia', 'hw22_witch_deirdra', 'hw22_witch_sibilla']),
+    VoiceMode('witches_crew_cn', 'witches_crew_cn', lang='ZH_CH', female=True, icon=['hw22_witch_aurelia', 'hw22_witch_deirdra', 'hw22_witch_sibilla']),
     VoiceMode('celebrity2023_en', 'celebrity2023_en', lang='RU', female=True, icon='ny23_girl_m'),
     VoiceMode('commander_bph_2022_1', 'commander_bph_2022_1', icon='bp_commander_h_1'),
     VoiceMode('commander_bph_2022_2', 'commander_bph_2022_2', lang='EN', icon='bp_commander_h_2'),
@@ -166,16 +250,16 @@ VOICE_MODES = [
     VoiceMode('handOfBlood', 'handOfBlood', lang='DE', icon='HandOfBlood'),
     VoiceMode('hannelore23_en', 'hannelore23_en', lang='EN', female=True, icon='wt_2023_hannelore'),
     VoiceMode('hannelore23_ru', 'hannelore23_ru', lang='RU', female=True, icon='wt_2023_hannelore'),
-    VoiceMode('hannelore23_cn', 'hannelore23_cn', lang='CN', female=True, icon='wt_2023_hannelore'),
+    VoiceMode('hannelore23_cn', 'hannelore23_cn', lang='ZH_CH', female=True, icon='wt_2023_hannelore'),
     VoiceMode('jana23_en', 'jana23_en', lang='EN', female=True, icon='wt_2023_driver'),
     VoiceMode('jana23_ru', 'jana23_ru', lang='RU', female=True, icon='wt_2023_driver'),
-    VoiceMode('jana23_cn', 'jana23_cn', lang='CN', female=True, icon='wt_2023_driver'),
+    VoiceMode('jana23_cn', 'jana23_cn', lang='ZH_CH', female=True, icon='wt_2023_driver'),
     VoiceMode('talktomeGoose', 'talktomeGoose', lang='EN', icon='tc2023_commander_1'),
     VoiceMode('skill4ltu_23', 'skill4ltu_23', lang='RU', icon='tc2023_commander_2'),
-    VoiceMode('tankman_bp_12_m_5', 'tankman_bp_12_m_5', icon='tankmen_bp12_6'),
-    VoiceMode('tankman_bp_12_m_8', 'tankman_bp_12_m_8', icon=['tankmen_bp12_7', 'tankmen_bp12_8']),
-    VoiceMode('tankman_bp_12_m_9', 'tankman_bp_12_m_9', icon='tankmen_bp12_9'),
-    VoiceMode('tankman_bp_12_m_10', 'tankman_bp_12_m_10', female=True, icon='tankmen_bp12_5'),
+    VoiceMode('tankman_bp_12_m_5', 'tankman_bp_12_m_5', female=True, icon='tankmen_bp12_5'),
+    VoiceMode('tankman_bp_12_m_8', 'tankman_bp_12_m_8', icon=['tankmen_bp12_8', 'tankmen_bp12_7']),
+    VoiceMode('tankman_bp_12_m_9', 'tankman_bp_12_m_9', icon=['tankmen_bp12_9', 'tankmen_bp12_6']),
+    VoiceMode('tankman_bp_12_m_10', 'tankman_bp_12_m_10', enabled=False),
     VoiceMode('tankmen_bp1002_1', 'tankmen_bp1002_1', lang='RU', icon='tankmen_bp1002_1'),
     VoiceMode('tankmen_bp1002_3', 'tankmen_bp1002_3', lang='UK', icon='tankmen_bp1002_3'),
     VoiceMode('tankmen_bp1004_1', 'tankmen_bp1004_1', lang='EN', icon='tankmen_bp1004_1'),
@@ -208,7 +292,7 @@ VOICE_MODES = [
     VoiceMode('tankmen_bp16_9', 'tankmen_bp16_9', lang='UK', icon='tankmen_bp16_9'),
     VoiceMode('tankmen_bp17_5', 'tankmen_bp17_5', lang='EN', icon='tankmen_bp17_5'),
     VoiceMode('tankmen_bp17_8', 'tankmen_bp17_8', lang='UK', female=True, icon='tankmen_bp17_8'),
-    VoiceMode('tankmen_mtlb1_1', 'tankmen_mtlb1_1', lang='CN', icon='tankmen_mtlb1_1'),
+    VoiceMode('tankmen_mtlb1_1', 'tankmen_mtlb1_1', lang='ZH_CH', icon='tankmen_mtlb1_1'),
     VoiceMode('MartyVole', 'MartyVole', lang='DE', icon='Marty_Vole'),
     VoiceMode('cygan', 'cygan', lang='PL', icon='polish_commander'),
     VoiceMode('kirk', 'kirk', icon='cosm02_Kirk'),
@@ -217,23 +301,22 @@ VOICE_MODES = [
     VoiceMode('gup_erika', 'gup_erika', lang='DE', female=True, icon='girls_und_panzer_erika'),
     VoiceMode('gup_mika', 'gup_mika', lang='JA', female=True, icon='girls_und_panzer_mika'),
     VoiceMode('gup_crew_24', 'gup_crew_24', lang='JA', female=True, icon=['girls_und_panzer_aki', 'girls_und_panzer_mikko']),
-    VoiceMode('gup_alice', 'gup_alice', lang='US', female=True, icon='girls_und_panzer_alice'),
+    VoiceMode('gup_alice', 'gup_alice', lang='EN', female=True, icon='girls_und_panzer_alice'),
     VoiceMode('gup_darjeeling', 'gup_darjeeling', lang='UK', female=True, icon='girls_und_panzer_darjeeling'),
     VoiceMode('gup_crew_25', 'gup_crew_25', lang='UK', female=True, icon=['girls_und_panzer_orange', 'girls_und_panzer_assam', 'girls_und_panzer_rosehip', 'girls_und_panzer_rukuriri']),
     VoiceMode('ermelinda24_en', 'ermelinda24_en', lang='EN', female=True, icon='wt_2024_ermelinda'),
-    VoiceMode('ermelinda24_cn', 'ermelinda24_cn', lang='CN', female=True, icon='wt_2024_ermelinda'),
+    VoiceMode('ermelinda24_cn', 'ermelinda24_cn', lang='ZH_CH', female=True, icon='wt_2024_ermelinda'),
     VoiceMode('krieger24_en', 'krieger24_en', lang='EN', icon='wt_2024_vonkrieger'),
-    VoiceMode('krieger24_cn', 'krieger24_cn', lang='CN', icon='wt_2024_vonkrieger'),
+    VoiceMode('krieger24_cn', 'krieger24_cn', lang='ZH_CH', icon='wt_2024_vonkrieger'),
     VoiceMode('mouzAkrobat24', 'mouzAkrobat24', lang='DE', icon='wt_2024_mouzakrobat'),
     VoiceMode('quickyBaby24', 'quickyBaby24', lang='UK', icon='wt_2024_quickybaby'),
     VoiceMode('dakillzor24', 'dakillzor24', lang='FR', icon='wt_2024_dakillzor'),
     VoiceMode('skill4ltu24', 'skill4ltu24', lang='RU', icon='wt_2024_skill4ltu'),
-    VoiceMode('zhongPengFei24', 'zhongPengFei24', lang='CN', icon='wt_CN2024_zhongpengfei'),
-    VoiceMode('bMeng24', 'bMeng24', lang='CN', icon='wt_CN2024_bmeng'),
-    VoiceMode('yiTuanTuan24', 'yiTuanTuan24', lang='CN', female=True, icon='wt_CN2024_yituantuan'),
-    VoiceMode('saoNian24', 'saoNian24', lang='CN', icon='wt_CN2024_saonian'),
+    VoiceMode('zhongPengFei24', 'zhongPengFei24', lang='ZH_CH', icon='wt_CN2024_zhongpengfei'),
+    VoiceMode('bMeng24', 'bMeng24', lang='ZH_CH', icon='wt_CN2024_bmeng'),
+    VoiceMode('yiTuanTuan24', 'yiTuanTuan24', lang='ZH_CH', female=True, icon='wt_CN2024_yituantuan'),
+    VoiceMode('saoNian24', 'saoNian24', lang='ZH_CH', icon='wt_CN2024_saonian'),
 ]
-VOICE_MODES.sort(key=lambda mode: I18N.get('UI_setting_voice_%s' % mode.name, mode.name))
 
 
 MUSIC_MODES = [

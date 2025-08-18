@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
 I18N = {
     "name": "Ingame voice messages override",
+    "UI_setting_icon_enabled_text": "Show voice's character and name during battle",
+    "UI_setting_icon_enabled_tooltip": "You can reposition the portrait during battle by dragging it with the mouse",
     "UI_setting_music_text": "Ingame music mode",
     "UI_setting_music_default": "Default",
     "UI_setting_music_offspring": "The Offspring",
@@ -150,10 +153,9 @@ I18N = {
     "UI_setting_voice_handOfBlood": "CC: HandOfBlood (DE)",
     "UI_setting_voice_talktomeGoose": "CC: TalkTo_MeGoose (US)",
     "UI_setting_voice_skill4ltu_23": "CC: Skill4ltu (WT-23) (RU)",
-    "UI_setting_voice_tankman_bp_12_m_5": "Dune: Gurney Halleck",
+    "UI_setting_voice_tankman_bp_12_m_5": "Dune: Fremen Warrior (Jessica Atreides)",
     "UI_setting_voice_tankman_bp_12_m_8": "Dune: Harkonnen Soldier (Rabban Harkonnen)",
-    "UI_setting_voice_tankman_bp_12_m_9": "Dune: Sardaukar Trooper",
-    "UI_setting_voice_tankman_bp_12_m_10": "Dune: Fremen Warrior (Jessica Atreides)",
+    "UI_setting_voice_tankman_bp_12_m_9": "Dune: Sardaukar Trooper (Gurney Halleck)",
     "UI_setting_voice_tankmen_bp1002_1": "Snatch: Boris The Blade Yurinov (RU)",
     "UI_setting_voice_tankmen_bp1002_3": "Snatch: Bullet-Tooth Tony (UK)",
     "UI_setting_voice_tankmen_bp1004_1": "Rambo: Will Teasle (US)",
