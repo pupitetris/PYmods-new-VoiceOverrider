@@ -28,7 +28,10 @@ This repo is a Fork of Yury Polyacov's PYmods original, meant to publish my new 
 * **Feature**: A "Round Robin" synthetic mode that instead of choosing at random, sequentially selects every available voice.
 * **Feature**: In-battle re-roll of the current voice.
 * **Enhancement**: a small version of the in-battle commander portrait using the barracks icons, in case the "big" icon version is too intrusive.
+* **Enhancement**: For national voice modes, paint the nation's flag behind the "empty" commander portrait.
 * **Feature**: Option to not override the commander's voice if it has its own voice (meaning, only change the voice if the commander is "generic").
+* **Enhancement**: For the "Do nothing (No override)" mode, show the actual commander's portrait during the battle.
+* **Enhancement**: Option to show the commander's portrait only when a special key is pressed (such as Alt).
 * **Feature**: New overriding method: be able to select a voice for a given tank.
 * **Feature**: Overriding with a given voice uppon meeting certain conditions, such as a specific voice, nation or genre (male/female)
 * **Enhancement**: include voiceover banks of voices not available on all regions (such as HandOfBlood).
