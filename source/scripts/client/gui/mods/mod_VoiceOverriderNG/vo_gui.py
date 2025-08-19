@@ -83,7 +83,7 @@ class VoGUI(object):
 
 
     def setCommander(self, voice_mode):
-        icon = voice_mode.icon
+        icon = voice_mode.get_icon()
         if type(icon) == list:
             icon = icon[random.randint(0, len(icon) - 1)]
         if icon is None or type(icon) != str or icon == '':
