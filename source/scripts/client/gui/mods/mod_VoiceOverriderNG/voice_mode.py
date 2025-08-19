@@ -52,7 +52,7 @@ def _castOrNone(value, _type):
 
 def _today_is_newyears():
     now = datetime.datetime.now()
-    return datetime.date(now.year, 12, 6) <= now.date() <= datetime.date(now.year + 1, 1, 13)
+    return datetime.date(now.year, 12, 1) <= now.date() <= datetime.date(now.year + 1, 1, 8)
 
 
 class VoiceMode(object):
