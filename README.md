@@ -37,7 +37,13 @@ This repo is a Fork of Yury Polyacov's PYmods original, meant to publish my new 
 * **Enhancement**: include voiceover banks of voices not available on all regions (such as HandOfBlood).
 * **Bug**: There is a bug where playing the National voices may cause further attempts to play voices to not work. Only affects the configuration screen, voices still work throughout the game.
 * **Help needed**: Russian translations have not been updated or checked for typos (help needed, I don't speak Russian).
-* **WoT bug**: Some voices are not correctly configured in the game )(at least, the NA client). These have been marked as not enabled, and as I find more, they will be added. Disabled voices: `HandOfBlood` (available only on the EU client), `tankman_bp_12_m_10` (a Dune voice mode that points to the same female voice as `tankman_bp_12_m_5`). Some other voices in chinese are not working, but I haven't marked them as disabled.
+* **WoT bug**: Some voices are not correctly configured in the game. These have been disabled as their sound banks are not available (at least in the NA client). As a workaround and to have them active on clients that do provide these sound banks, a routine that checks the existence of the voiceover.bnk files at initialization is needed.
+  * Disabled voices:
+	* `HandOfBlood`: available only on the EU client, [apparently](https://worldoftanks.eu/en/news/specials/handofblood-commander-sale-mar23/).
+	* `tankman_bp_12_m_10`: a Dune voice mode that points to the same female voice as `tankman_bp_12_m_5`
+	* `valkyrie1`: Valkyria Chronicles: Welkin Gunther, probably [available only in the ASIA client](https://worldoftanks.asia/en/news/specials/ps-valkyria-chronicles-250123/).
+	* `valkyrie2`: Valkyria Chronicles: Carisa Contzen, ditto.
+    * `krieger24_cn`, `ermelinda24_cn`, `bMeng24`, `saoNian24`, `yiTuanTuan24`, `zhongPengFei24`: chinese voiceovers for Waffentrager 2024, probably [available only in the ASIA client](https://wotgame.cn/zh-cn/content/guide/general/waffentrager-event/).
 
 ### Usage
 
