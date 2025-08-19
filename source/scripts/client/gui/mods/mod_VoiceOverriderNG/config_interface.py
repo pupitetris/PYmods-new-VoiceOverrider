@@ -17,6 +17,7 @@ from .i18n import I18N
 
 
 DEFAULT_POSITION = -1
+SEQUENTIAL_START = 0
 
 
 def getInt(n, default):
@@ -42,6 +43,7 @@ class ConfigInterface(SimpleConfigInterface):
         self._voice_modes_by_name = {}
         self._voice_modes_map = {}
         self.currentVoiceMode = None
+        self.sequentialVoiceMode = SEQUENTIAL_START
 
         self.music_modes = MUSIC_MODES
 
@@ -240,6 +242,20 @@ class ConfigInterface(SimpleConfigInterface):
         return self.voice_modes[0]
 
 
+    def _get_next_sequential_voice_mode(self):
+        mode = None
+        loops = 0
+        while True:
+            mode = self.voice_modes[self.sequentialVoiceMode]
+            self.sequentialVoiceMode += 1
+            if self.sequentialVoiceMode >= len(self.voice_modes):
+                self.sequentialVoiceMode = SEQUENTIAL_START
+                loops += 1
+            if not mode.synthetic or loops > 1:
+                break
+        return mode
+
+
     def playPreviewSound(self, mode_key=None):
         mode = self._get_voice_mode(mode_key)
         self.clearPreviewSound(mode)
@@ -350,6 +366,8 @@ class ConfigInterface(SimpleConfigInterface):
             if mode.name == 'mute':
                 self._enableVoiceSounds(soundGroups, False)
                 return soundModes.setNationalMappingByMode('default')
+            if mode.name == 'sequential':
+                mode = self._get_next_sequential_voice_mode()
             
         self._enableVoiceSounds(soundGroups, True)
 

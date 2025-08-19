@@ -155,6 +155,7 @@ VOICE_MODES = [
     VoiceMode('random', synthetic=True, icon='crewSkins/FoolsDay_Rngesus'),
     VoiceMode('random_male', synthetic=True, icon='crewSkins/FoolsDay_Rngesus'),
     VoiceMode('random_female', synthetic=True, icon='crewSkins/FoolsDay_Rngesus'),
+    VoiceMode('sequential', synthetic=True),
     VoiceMode('default', 'default'),
     VoiceMode('default_male'),
     VoiceMode('default_female', female=True),
