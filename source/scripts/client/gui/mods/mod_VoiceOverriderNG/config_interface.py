@@ -17,7 +17,7 @@ from .i18n import I18N
 
 
 DEFAULT_POSITION = -1
-SEQUENTIAL_START = 0
+SEQUENTIAL_START = 0 # or for example, 'national_uk_female'
 
 
 def getInt(n, default):
@@ -243,16 +243,24 @@ class ConfigInterface(SimpleConfigInterface):
 
 
     def _get_next_sequential_voice_mode(self):
+        if type(self.sequentialVoiceMode) == str:
+            if self.sequentialVoiceMode in self._voice_modes_by_name:
+                self.sequentialVoiceMode = self._voice_modes_by_name[self.sequentialVoiceMode].idx
+            else:
+                LOG_ERROR('sequentialVoiceMode ' + repr(self.sequentialVoiceMode) + ' not a valid VoiceMode.name')
+                self.sequentialVoiceMode = 0
+
         mode = None
         loops = 0
         while True:
             mode = self.voice_modes[self.sequentialVoiceMode]
             self.sequentialVoiceMode += 1
             if self.sequentialVoiceMode >= len(self.voice_modes):
-                self.sequentialVoiceMode = SEQUENTIAL_START
+                self.sequentialVoiceMode = 0
                 loops += 1
             if not mode.synthetic or loops > 1:
                 break
+        LOG_WARNING('sequentialVoiceMode ' + repr(mode))
         return mode
 
 
@@ -366,8 +374,6 @@ class ConfigInterface(SimpleConfigInterface):
             if mode.name == 'mute':
                 self._enableVoiceSounds(soundGroups, False)
                 return soundModes.setNationalMappingByMode('default')
-            if mode.name == 'sequential':
-                mode = self._get_next_sequential_voice_mode()
             
         self._enableVoiceSounds(soundGroups, True)
 
@@ -425,6 +431,8 @@ class ConfigInterface(SimpleConfigInterface):
             return self.currentVoiceMode
 
         mode = self._selectAltVoiceMode(nation)
+        if mode.name == 'sequential':
+            mode = self._get_next_sequential_voice_mode()
         if mode.name[:6] == 'random':
             mode = self.selectRandomMode(mode.name[7:], nation)
         if not force:
