@@ -31,6 +31,7 @@ This repo is a Fork of Yury Polyacov's PYmods original, meant to publish my new 
 * **Feature**: Option to not override the commander's voice if it has its own voice (meaning, only change the voice if the commander is "generic").
 * **Feature**: New overriding method: be able to select a voice for a given tank.
 * **Feature**: Overriding with a given voice uppon meeting certain conditions, such as a specific voice, nation or genre (male/female)
+* **Enhancement**: include voiceover banks of voices not available on all regions (such as HandOfBlood).
 * **Bug**: There is a bug where playing the National voices may cause further attempts to play voices to not work. Only affects the configuration screen, voices still work throughout the game.
 * **Help needed**: Russian translations have not been updated or checked for typos (help needed, I don't speak Russian).
 * **WoT bug**: Some voices are not correctly configured in the game )(at least, the NA client). These have been marked as not enabled, and as I find more, they will be added. Disabled voices: `HandOfBlood` (available only on the EU client), `tankman_bp_12_m_10` (a Dune voice mode that points to the same female voice as `tankman_bp_12_m_5`). Some other voices in chinese are not working, but I haven't marked them as disabled.
