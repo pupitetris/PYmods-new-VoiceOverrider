@@ -2,9 +2,9 @@
 
 This repo is a Fork of Yury Polyacov's PYmods original, meant to publish my new version for mod_VoiceOverrider which includes new features and updates/fixes.
 
-## VoiceOverriderNG
+## ![VoiceOverriderNG][cover]
 
-"New Generation" for VoiceOverrider, renamed so the overhauled version doesn't collide with the OG VoiceOverrider.
+"New Generation" for VoiceOverrider, renamed so the overhauled version doesn't collide with the OG VoiceOverrider. This mod has been accepted in the [wgmods registry](https://wgmods.net/7288/) and is being included in [Aslain's Modpack](https://aslain.com/) (see the [forum topic](https://aslain.com/index.php?/topic/34501-mod-overhaul-voiceoverrider/)).
 
 ### Enhancements
 
@@ -17,19 +17,29 @@ This repo is a Fork of Yury Polyacov's PYmods original, meant to publish my new 
 * **Update**: (from the last published version from PYmods repo) Support all of the voices included up to 1.29.1.0 (latest as of 07/28/2025, includes Duke Nukem and Lara Croft)
 * **Fix**: Tweaks to voice names and removed typos.
 
+![Configuration Interface Screenshot][config_interface]
+
+* **Feature**: Sometimes a voice may sound cool but we don't know to which commander it belongs. An icon with the portrait of the active commander can be enabled, featuring to which voice you are listening. You can drag the icon around and put it wherever you find it convenient. It can be disabled from the configuration screen if you find it clutters the screen.
+
+![In-Battle Portrait Screenshot][vo_gui]
+
 ### TO-DOs
 
+* **Feature**: A "Round Robin" synthetic mode that instead of choosing at random, sequentially selects every available voice.
+* **Feature**: In-battle re-roll of the current voice.
+* **Enhancement**: a small version of the in-battle commander portrait using the barracks icons, in case the "big" icon version is too intrusive.
+* **Feature**: Option to not override the commander's voice if it has its own voice (meaning, only change the voice if the commander is "generic").
+* **Feature**: New overriding method: be able to select a voice for a given tank.
+* **Feature**: Overriding with a given voice uppon meeting certain conditions, such as a specific voice, nation or genre (male/female)
 * **Bug**: There is a bug where playing the National voices may cause further attempts to play voices to not work. Only affects the configuration screen, voices still work throughout the game.
 * **Help needed**: Russian translations have not been updated or checked for typos (help needed, I don't speak Russian).
-* **WoT bug**: HandOfBlood, a voice in german that seems quite fun but is not available on the NA installation appears as an option because the NA configuration says it is included, but the bank file is not present.
-* **Feature**: New overriding method: selecting a voice for a given tank
-* **Feature**: Overriding with a given voice uppon meeting certain conditions, such as a specific voice, nation or genre (male/female)
+* **WoT bug**: Some voices are not correctly configured in the game )(at least, the NA client). These have been marked as not enabled, and as I find more, they will be added. Disabled voices: `HandOfBlood` (available only on the EU client), `tankman_bp_12_m_10` (a Dune voice mode that points to the same female voice as `tankman_bp_12_m_5`). Some other voices in chinese are not working, but I haven't marked them as disabled.
 
 ### Usage
 
 #### Installation
 
-* Download the `mod_VoiceOverriderNG.zip` file from the Releases section.
+* Download the `mod_VoiceOverriderNG-v2-xxx.zip` file from the Releases section.
 * Unzip content into the `mods` directory of your World of Tanks installation.
 
 #### Configuration access
@@ -103,3 +113,7 @@ After cloning, it is recommended to:
  - run `py -2 build_tools/mtimestore.py -r`
  - read and follow instructions in res/res/res.md file
 otherwise correct building of the mods is not guaranteed.
+
+[cover]: media/cover.png
+[config_interface]: media/config_interface.png
+[vo_gui]: media/vo_gui.png
