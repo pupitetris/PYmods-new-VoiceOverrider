@@ -101,7 +101,7 @@ class ConfigInterface(SimpleConfigInterface):
         self.ID = 'VoiceOverriderNG'
         self.i18n = I18N
         self.author = 'by Arturo Espinosa (overhaul) and Polyacov_Yury'
-        self.version = '2.0.2 %(file_compile_date)s'
+        self.version = '2.1.0 %(file_compile_date)s'
         self.modsGroup = 'PYmods'
         self.modSettingsID = 'PYmodsGUI'
 
