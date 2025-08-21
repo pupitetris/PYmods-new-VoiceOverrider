@@ -47,7 +47,7 @@ def on_startGUI(*_, **__):
     global g_gui
     global g_config
 
-    if not g_config.iconEnabled():
+    if not g_config.data['enabled'] or not g_config.iconEnabled():
         return
 
     (x, y) = g_config.iconGetPosition()
@@ -66,6 +66,9 @@ def on_startGUI(*_, **__):
 def on_destroyGUI(*_, **__):
     global g_gui
     global g_config
+
+    if not g_config.data['enabled']:
+        return
 
     g_config.currentVoiceMode = None
 
