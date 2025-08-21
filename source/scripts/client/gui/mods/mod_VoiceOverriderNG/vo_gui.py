@@ -29,6 +29,7 @@ class VoGUI(object):
         self._visible = True
         self._updatePositionHook = updatePositionHook
 
+        self.ID_flag = self.ID + '.flag'
         self.ID_icon = self.ID + '.icon'
         self.ID_label = self.ID + '.label'
 
@@ -37,7 +38,13 @@ class VoGUI(object):
             'alignX': GF_ALIGN.LEFT, 'alignY': GF_ALIGN.TOP,
             'autoSize': True, 'limit': True, 'drag': True
         })
+        g_guiFlash.createComponent(self.ID_flag, GF_TYPE.IMAGE, {
+            'x': 0, 'y': 0, 'width': ICON_WIDTH, 'height': ICON_HEIGHT,
+            'alignX': GF_ALIGN.LEFT, 'alignY': GF_ALIGN.TOP,
+            'limit': True
+        })
         g_guiFlash.createComponent(self.ID_icon, GF_TYPE.IMAGE, {
+            'x': 0, 'y': 0, 'width': ICON_WIDTH, 'height': ICON_HEIGHT,
             'alignX': GF_ALIGN.LEFT, 'alignY': GF_ALIGN.TOP,
             'autoSize': True, 'limit': True
         })
@@ -87,6 +94,12 @@ class VoGUI(object):
 
 
     def setCommander(self, voice_mode):
+        flag = voice_mode.get_flag()
+        if flag is None:
+            g_guiFlash.updateComponent(self.ID_flag, {'visible': False})
+        else:
+            g_guiFlash.updateComponent(self.ID_flag, {'visible': True, 'image': flag.big_url})
+
         icon = voice_mode.get_icon()
         if type(icon) == list:
             icon = icon[random.randint(0, len(icon) - 1)]

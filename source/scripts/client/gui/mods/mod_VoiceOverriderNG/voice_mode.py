@@ -12,6 +12,7 @@ from debug_utils import LOG_DEBUG, LOG_ERROR, LOG_NOTE, LOG_WARNING
 
 MusicMode = namedtuple('MusicMode', ['name', 'tag'])
 Nation = namedtuple('Nation', ['name', 'lang', 'flag'])
+Flag = namedtuple('Flag', ['nation_name', 'small_url', 'big_url'])
 
 
 NATIONS = {
@@ -32,10 +33,13 @@ NATIONS_AVAILABLE_NAMES = nations.AVAILABLE_NAMES
 
 
 FLAGS = {
-    n.flag: icons.makeImageTag(
-        backport.image((R.images.gui.maps.icons.flags.c_20x12.dyn(n.name))()), width=20, height=12, vSpace=-1)
+    n.flag: Flag(n.name,
+                 backport.image((R.images.gui.maps.icons.flags.c_20x12.dyn(n.name))()),
+                 backport.image((R.images.gui.maps.icons.flags.c_600x450.dyn(n.name))()))
     for n in NATIONS.values()
 }
+FLAGS.update({ f.nation_name: f for f in FLAGS.values() })
+FLAGS.update({ n.lang: FLAGS[n.name] for n in NATIONS.values() })
 
 
 def _cast(value, _type):
@@ -144,10 +148,10 @@ class VoiceMode(object):
 
         result = re.search('\(([^)]+)\)$', label)
         if result is not None:
-            lang_name = result.group(1)
-            if lang_name in FLAGS:
+            flag_name = result.group(1)
+            if flag_name in FLAGS:
                 offset = -1 * len(result.group(0))
-                label = label[:offset] + FLAGS[lang_name]
+                label = label[:offset] + icons.makeImageTag(FLAGS[flag_name].small_url, width=20, height=12, vSpace=-1)
 
         if short:
             self.short_label = label
@@ -162,6 +166,12 @@ class VoiceMode(object):
             if self.icon_ny is not None:
                 return self.icon_ny
         return self.icon
+
+
+    def get_flag(self):
+        if self.lang is None or self.lang not in FLAGS:
+            return None
+        return FLAGS[self.lang]
 
 
 VOICE_MODES = [
