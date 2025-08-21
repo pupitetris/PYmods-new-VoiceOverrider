@@ -4,6 +4,7 @@ __version__ = '2.1.0 ' + __date__
 
 from gui.battle_control import avatar_getter
 from gui.game_control.special_sound_ctrl import SpecialSoundCtrl
+from gui.Scaleform.daapi.view.meta import DamagePanelMeta
 from items.vehicles import VehicleDescr
 import nations
 
@@ -81,3 +82,14 @@ def on_destroyGUI(*_, **__):
     g_gui = None
 
     g_config.writeDataJson()
+
+
+@overrideMethod(DamagePanelMeta.DamagePanelMeta, 'as_setVehicleDestroyedS')
+def new_onVehicleDestroyed(base, self, *args, **kwargs):
+    global g_gui
+    global g_config
+
+    if g_config.data['enabled'] and g_config.iconEnabled():
+        g_gui.visible(False, {'delay': 3.0, 'duration': 0.5})
+
+    return base(self, *args, **kwargs)

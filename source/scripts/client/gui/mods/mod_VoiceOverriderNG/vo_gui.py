@@ -57,9 +57,13 @@ class VoGUI(object):
         g_guiFlash.deleteComponent(self.ID)
 
 
-    def visible(self, is_visible):
+    def visible(self, is_visible, params=None):
+        if is_visible == self._visible:
+            return
+
         self._visible = is_visible
-        g_guiFlash.updateComponent(self.ID, {'visible': is_visible})
+        alpha = 1.0 if is_visible else 0.0
+        g_guiFlash.updateComponent(self.ID, {'visible': is_visible, 'alpha': alpha}, params)
 
 
     def setPosition(self, x, y):
