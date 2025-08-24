@@ -33,7 +33,9 @@ class ConfigInterface(SimpleConfigInterface):
     NUM_VOICE_ALTS = 20
 
 
-    def __init__(self):
+    def __init__(self, version):
+        self._version = version
+
         self._voice_enabled = True
         self._voice_labels = []
         self._previewSound = None
@@ -103,7 +105,7 @@ class ConfigInterface(SimpleConfigInterface):
         self.ID = 'VoiceOverriderNG'
         self.i18n = I18N
         self.author = 'by Arturo Espinosa (overhaul) and Polyacov_Yury'
-        self.version = '2.1.0 %(file_compile_date)s'
+        self.version = self._version
         self.modsGroup = 'PYmods'
         self.modSettingsID = 'PYmodsGUI'
 

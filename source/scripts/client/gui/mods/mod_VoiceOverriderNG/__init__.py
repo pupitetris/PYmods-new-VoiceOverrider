@@ -1,6 +1,6 @@
-__modID__ = '%(mod_ID)s'
-__date__ = '%(file_compile_date)s'
-__version__ = '2.1.0 ' + __date__
+_modID = '%(mod_ID)s'
+_date = '%(file_compile_date)s'
+_version = '2.2.0 ' + _date
 
 from gui.battle_control import avatar_getter
 from gui.game_control.special_sound_ctrl import SpecialSoundCtrl
@@ -8,17 +8,14 @@ from gui.Scaleform.daapi.view.meta import DamagePanelMeta
 from items.vehicles import VehicleDescr
 import nations
 
-from OpenModsCore import Analytics, overrideMethod, events
+from OpenModsCore import overrideMethod, events
 from debug_utils import LOG_DEBUG, LOG_ERROR, LOG_NOTE, LOG_WARNING
 
 from .config_interface import ConfigInterface
 from .vo_gui import VoGUI
 
 
-g_config = ConfigInterface()
-#analytics = Analytics(g_config.ID, g_config.version, 'UA-76792179-22')
-
-
+g_config = ConfigInterface(_version)
 g_gui = None
 
 
@@ -54,7 +51,7 @@ def on_startGUI(*_, **__):
     (x, y) = g_config.iconGetPosition()
 
     if g_gui is None:
-        g_gui = VoGUI(__modID__, g_config.iconSetPosition)
+        g_gui = VoGUI(_modID, g_config.iconSetPosition)
 
     g_gui.setPosition(x, y)
 
