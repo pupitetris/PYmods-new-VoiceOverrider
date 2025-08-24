@@ -11,6 +11,7 @@ This repo is a Fork of Yury Polyacov's PYmods original, meant to publish my new 
 * **Feature**: Instead of allowing to chose only one voice that will be globally used on every battle, allow for the use of up to 20 alternative voices, which are changed randomly before every battle. The selection uses a user-provided weight distribution, all configurable in-game so you can have certain voices more often than others.
 * **Feature**: The national voice for each country can be manually selected as a voice option.
 * **Feature**: Special voice selections and filters: "None (Silent)" option disables (mutes) the voices, or get a random female or male voice, or "do nothing" (no override) mode, or use default voices and limit the voice selection to those consistent with the playing tank's nation.
+* **Feature**: A "Round Robin" synthetic mode that instead of choosing at random, sequentially selects every available voice.
 * **Feature**: Use the game's internals to probe available voices and add those missing from VoiceOverrider's list, allowing for newly added voices or other voice mod's to appear at the end of the selector lists.
 * **Feature**: To make it easier to find the desired voice, options are now better grouped and sorted, and are graphically marked with a flag of the language/country they belong to, plus a female mark if it is the case.
 * **Enhancement**: Better grouping for "bloggers", or community leaders, so they can be found easier. Some voices wre grouped using prefixes that are a bit cryptic so they were removed or simplified or sent to the end of the string so they don't affect grouping.
@@ -25,10 +26,8 @@ This repo is a Fork of Yury Polyacov's PYmods original, meant to publish my new 
 
 ### TO-DOs
 
-* **Feature**: A "Round Robin" synthetic mode that instead of choosing at random, sequentially selects every available voice.
 * **Feature**: In-battle re-roll of the current voice.
 * **Enhancement**: a small version of the in-battle commander portrait using the barracks icons, in case the "big" icon version is too intrusive.
-* **Enhancement**: For national voice modes, paint the nation's flag behind the "empty" commander portrait.
 * **Feature**: Option to not override the commander's voice if it has its own voice (meaning, only change the voice if the commander is "generic").
 * **Enhancement**: For the "Do nothing (No override)" mode, show the actual commander's portrait during the battle.
 * **Enhancement**: Option to show the commander's portrait only when a special key is pressed (such as Alt).
@@ -126,4 +125,4 @@ otherwise correct building of the mods is not guaranteed.
 
 [cover]: media/cover.png
 [config_interface]: media/config_interface.png
-[vo_gui]: media/vo_gui.png
+[vo_gui]: media/vo_gui-2.2.png
