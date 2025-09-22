@@ -60,6 +60,7 @@ class VoGUI(object):
     def destroy(self):
         GF_EVENT.UPDATED -= self._onUpdatePosition
         g_guiFlash.deleteComponent(self.ID_icon)
+        g_guiFlash.deleteComponent(self.ID_flag)
         g_guiFlash.deleteComponent(self.ID_label)
         g_guiFlash.deleteComponent(self.ID)
 
