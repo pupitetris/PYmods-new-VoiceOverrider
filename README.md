@@ -11,31 +11,31 @@ This repo is a Fork of Yury Polyacov's PYmods original, meant to publish my new 
 * **Feature**: Instead of allowing to chose only one voice that will be globally used on every battle, allow for the use of up to 20 alternative voices, which are changed randomly before every battle. The selection uses a user-provided weight distribution, all configurable in-game so you can have certain voices more often than others.
 * **Feature**: The national voice for each country can be manually selected as a voice option.
 * **Feature**: Special voice selections and filters: "None (Silent)" option disables (mutes) the voices, or get a random female or male voice, or "do nothing" (no override) mode, or use default voices and limit the voice selection to those consistent with the playing tank's nation.
+* **Feature**: Option to not override the commander's voice if it has its own voice (meaning, only change the voice if the commander is "generic").
 * **Feature**: A "Round Robin" synthetic mode that instead of choosing at random, sequentially selects every available voice.
 * **Feature**: Use the game's internals to probe available voices and add those missing from VoiceOverrider's list, allowing for newly added voices or other voice mod's to appear at the end of the selector lists.
 * **Feature**: To make it easier to find the desired voice, options are now better grouped and sorted, and are graphically marked with a flag of the language/country they belong to, plus a female mark if it is the case.
 * **Enhancement**: Better grouping for "bloggers", or community leaders, so they can be found easier. Some voices wre grouped using prefixes that are a bit cryptic so they were removed or simplified or sent to the end of the string so they don't affect grouping.
-* **Update**: (from the last published version from PYmods repo) Support all of the voices included up to 1.29.1.0 (latest as of 07/28/2025, includes Duke Nukem and Lara Croft)
+* **Update**: (from the last published version from PYmods repo) Support all of the voices included up to 2.0.0.2 (latest as of 10/09/2025, includes Wolfenstein special Battle Pass cast)
 * **Fix**: Tweaks to voice names and removed typos.
 
 ![Configuration Interface Screenshot][config_interface]
 
 * **Feature**: Sometimes a voice may sound cool but we don't know to which commander it belongs. An icon with the portrait of the active commander can be enabled, featuring to which voice you are listening. You can drag the icon around and put it wherever you find it convenient. It can be disabled from the configuration screen if you find it clutters the screen.
+* **Enhancement**: There's an option that allows to show the commander's portrait only while a special key is pressed (such as Alt, the default).
 
 ![In-Battle Portrait Screenshot][vo_gui]
 
 ### TO-DOs
 
 * **Feature**: In-battle re-roll of the current voice.
-* **Enhancement**: a small version of the in-battle commander portrait using the barracks icons, in case the "big" icon version is too intrusive.
-* **Feature**: Option to not override the commander's voice if it has its own voice (meaning, only change the voice if the commander is "generic").
+* **Enhancement**: a small version of the in-battle commander portrait using the barracks icons, in case the "big" icon version is deemed too intrusive.
 * **Enhancement**: For the "Do nothing (No override)" mode, show the actual commander's portrait during the battle.
-* **Enhancement**: Option to show the commander's portrait only when a special key is pressed (such as Alt).
 * **Feature**: New overriding method: be able to select a voice for a given tank.
 * **Feature**: Overriding with a given voice uppon meeting certain conditions, such as a specific voice, nation or genre (male/female)
 * **Enhancement**: include voiceover banks of voices not available on all regions (such as HandOfBlood).
 * **Bug**: There is a bug where playing the National voices may cause further attempts to play voices to not work. Only affects the configuration screen, voices still work throughout the game.
-* **Help needed**: Russian translations have not been updated or checked for typos (help needed, I don't speak Russian).
+* **Help needed**: Translations to other languages would be greatly appreciated.
 * **WoT bug**: Some voices are not correctly configured in the game. These have been disabled as their sound banks are not available (at least in the NA client). As a workaround and to have them active on clients that do provide these sound banks, a routine that checks the existence of the voiceover.bnk files at initialization is needed.
   * Disabled voices:
 	* `HandOfBlood`: available only on the EU client, [apparently](https://worldoftanks.eu/en/news/specials/handofblood-commander-sale-mar23/).
