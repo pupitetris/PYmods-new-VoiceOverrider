@@ -197,6 +197,8 @@ I18N = {
     "UI_setting_music_offspring": "The Offspring",
     "UI_setting_music_sabaton": "Sabaton",
     "UI_setting_voice_text": "Default in-game message voices",
+    "UI_setting_voice_do_nothing_if_special_text": "Don't override special voice commanders",
+    "UI_setting_voice_do_nothing_if_special_tooltip": "Some special commanders from holiday ops, battle pass and rewards have their own voice. Activate so the tanks you have with these commanders keep their voice.",
     "UI_setting_voice_use_tank_nation_text": "Select voice matching tank's nation",
     "UI_setting_voiceAlt_text": "Alternate in-game message voices:",
     "UI_setting_voiceAlt_tooltip": "Randomly select these voices, using numeric weights",

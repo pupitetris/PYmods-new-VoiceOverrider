@@ -5,6 +5,7 @@
     "icon_y": -1,
     "music": 0,
     "voice": 0,
+    "voice_do_nothing_if_special": true,
     "voice_name": "",
     "voice_use_tank_nation": false,
     "voiceAlt_0_weight": 0,

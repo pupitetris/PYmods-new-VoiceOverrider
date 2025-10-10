@@ -71,6 +71,8 @@
     "UI_setting_voice_default": "**Default",
     "UI_setting_voice_default_female": "**Default: female",
     "UI_setting_voice_default_male": "**Default: male",
+    "UI_setting_voice_do_nothing_if_special_text": "Don't override special voice commanders",
+    "UI_setting_voice_do_nothing_if_special_tooltip": "Some special commanders from holiday ops, battle pass and rewards have their own voice. Activate so the tanks you have with these commanders keep their voice.",
     "UI_setting_voice_duke": "G.I. Joe: Duke (US)",
     "UI_setting_voice_elisa21_cn": "Waffentrager-21: Elisa Day (CN)",
     "UI_setting_voice_elisa21_en": "Waffentrager-21: Elisa Day (US)",

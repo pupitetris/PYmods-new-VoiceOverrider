@@ -87,6 +87,7 @@ class ConfigInterface(SimpleConfigInterface):
             mode.idx = idx
         self._voice_labels = [ mode.get_label(self.i18n, with_gender=True) for mode in self.voice_modes ]
         self._voice_modes_by_name = { mode.name: mode for mode in self.voice_modes }
+        self._voice_modes_by_languageMode = { mode.languageMode: mode for mode in self.voice_modes }
 
 
     def _set_default_voice_alt_conf(self):
@@ -117,6 +118,7 @@ class ConfigInterface(SimpleConfigInterface):
             'music': 0,
             'voice': 0,
             'voice_name': '',
+            'voice_do_nothing_if_special': True,
             'voice_use_tank_nation': False,
         }
 
@@ -172,6 +174,7 @@ class ConfigInterface(SimpleConfigInterface):
                 self._voice_labels,
                 width=350,
                 button={'iconSource': '../maps/icons/buttons/sound.png'}),
+            self.tb.createControl('voice_do_nothing_if_special'),
             self.tb.createControl('voice_use_tank_nation'),
             self.tb.createLabel('voiceAlt'),
             self.tb.createLabel('voiceAlt_0'),
@@ -415,7 +418,12 @@ class ConfigInterface(SimpleConfigInterface):
         return self.data['voice']
         
 
-    def _selectAltVoiceMode(self, nation=None):
+    def _selectAltVoiceMode(self, nation=None, specialVoice=None):
+        if specialVoice is not None and self.data['voice_do_nothing_if_special']:
+            mode = self._voice_modes_by_languageMode.get(specialVoice.languageMode)
+            if mode is not None:
+                return mode
+
         nation = self._nation_canon(nation)
 
         retries = 1000
@@ -428,11 +436,11 @@ class ConfigInterface(SimpleConfigInterface):
         return self.voice_modes[self.data['voice']]
 
 
-    def selectAltVoiceMode(self, nation=None, force=False):
+    def selectAltVoiceMode(self, nation=None, specialVoice=None, force=False):
         if not force and self.currentVoiceMode is not None:
             return self.currentVoiceMode
 
-        mode = self._selectAltVoiceMode(nation)
+        mode = self._selectAltVoiceMode(nation, specialVoice)
         if mode.name == 'sequential':
             mode = self._get_next_sequential_voice_mode()
         if mode.name[:6] == 'random':

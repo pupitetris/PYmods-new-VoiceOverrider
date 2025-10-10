@@ -6,6 +6,10 @@ from gui.battle_control import avatar_getter
 from gui.game_control.special_sound_ctrl import SpecialSoundCtrl
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
 from items.vehicles import VehicleDescr
+
+from items import tankmen
+from items.components.crew_skins_constants import NO_CREW_SKIN_ID, NO_CREW_SKIN_SOUND_SET
+
 import nations
 
 from OpenModsCore import overrideMethod, events
@@ -28,8 +32,10 @@ def new_setPlayerVehicle(base, self, vehiclePublicInfo, isPlayerVehicle, *args, 
     if not g_config.data['enabled'] or arena is None:
         return
 
-    nation = nations.NAMES[VehicleDescr(vehiclePublicInfo.compDescr).type.id[0]]
-    voice_mode = g_config.selectAltVoiceMode(nation)
+    vehicle_descr = VehicleDescr(vehiclePublicInfo.compDescr)
+
+    nation = nations.NAMES[vehicle_descr.type.id[0]]
+    voice_mode = g_config.selectAltVoiceMode(nation, specialVoice=self.specialVoice)
     g_config.setSystemValue(nation, voice_mode)
 
     if g_gui is not None:
