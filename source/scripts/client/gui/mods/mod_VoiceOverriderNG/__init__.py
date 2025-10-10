@@ -19,10 +19,6 @@ from .config_interface import ConfigInterface
 from .vo_gui import VoGUI
 
 
-g_config = ConfigInterface(_version)
-g_gui = None
-
-
 @overrideMethod(SpecialSoundCtrl, 'setPlayerVehicle')
 def new_setPlayerVehicle(base, self, vehiclePublicInfo, isPlayerVehicle, *args, **kwargs):
     global g_gui
@@ -46,6 +42,14 @@ def new_setPlayerVehicle(base, self, vehiclePublicInfo, isPlayerVehicle, *args, 
     musicSetup.update(self._SpecialSoundCtrl__arenaMusicByStyle.get(tag, ()))
 
 
+def on_IconVisibleHotkey(is_pressed):
+    global g_gui
+    if g_gui is None:
+        return
+
+    g_gui.visible(is_pressed)
+
+
 @events.PlayerAvatar.startGUI.after
 def on_startGUI(*_, **__):
     global g_gui
@@ -53,6 +57,8 @@ def on_startGUI(*_, **__):
 
     if not g_config.data['enabled'] or not g_config.iconEnabled():
         return
+
+    g_config.setIconVisibleHotkeyCallback(on_IconVisibleHotkey)
 
     (x, y) = g_config.iconGetPosition()
 
@@ -63,7 +69,7 @@ def on_startGUI(*_, **__):
 
     voice_mode = g_config.currentVoiceMode
     g_gui.setCommander(voice_mode)
-    g_gui.visible(True)
+    g_gui.visible(not g_config.data['icon_on_alt'])
 
 
 @events.PlayerAvatar.destroyGUI.before
@@ -79,6 +85,8 @@ def on_destroyGUI(*_, **__):
     if not g_config.iconEnabled() or g_gui is None:
         return
 
+    g_config.setIconVisibleHotkeyCallback(None)
+
     g_gui.visible(False)
     g_gui.destroy()
     del g_gui
@@ -92,7 +100,13 @@ def new_onVehicleDestroyed(base, self, *args, **kwargs):
     global g_gui
     global g_config
 
-    if g_config.data['enabled'] and g_config.iconEnabled():
-        g_gui.visible(False, {'delay': 3.0, 'duration': 0.5})
+    if g_gui is None or not g_config.data['enabled'] or not g_config.iconEnabled():
+        return
+
+    g_gui.visible(False, {'delay': 3.0, 'duration': 0.5})
 
     return base(self, *args, **kwargs)
+
+
+g_config = ConfigInterface(_version)
+g_gui = None

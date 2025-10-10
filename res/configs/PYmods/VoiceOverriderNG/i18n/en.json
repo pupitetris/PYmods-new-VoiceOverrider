@@ -1,7 +1,10 @@
 {
     "UI_setting_button_test": "Test",
-    "UI_setting_icon_enabled_text": "Show voice's character and name during battle",
+    "UI_setting_icon_enabled_text": "Show icon with voice's character and name during battle",
     "UI_setting_icon_enabled_tooltip": "You can reposition the portrait during battle by dragging it with the mouse",
+    "UI_setting_icon_hotkeys_text": "Icon show hotkey",
+    "UI_setting_icon_hotkeys_tooltip": "Note: Key combinations not supported",
+    "UI_setting_icon_on_alt_text": "Show icon only while pressing hotkey",
     "UI_setting_music_default": "Default",
     "UI_setting_music_offspring": "The Offspring",
     "UI_setting_music_sabaton": "Sabaton",

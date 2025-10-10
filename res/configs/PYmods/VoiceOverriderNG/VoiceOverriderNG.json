@@ -1,6 +1,8 @@
 ﻿{
     "enabled": true,
     "icon_enabled": true,
+    "icon_hotkeys": [-1],
+    "icon_on_alt": false,
     "icon_x": -1,
     "icon_y": -1,
     "music": 0,

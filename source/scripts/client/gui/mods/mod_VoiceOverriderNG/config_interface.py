@@ -5,6 +5,7 @@ import itertools
 import random
 
 import BigWorld
+import Keys
 import Settings
 import SoundGroups
 from debug_utils import LOG_DEBUG, LOG_ERROR, LOG_NOTE, LOG_WARNING
@@ -16,8 +17,14 @@ from .voice_mode import VoiceMode, VOICE_MODES, MUSIC_MODES, NATIONS, NATIONS_BY
 from .i18n import I18N
 
 
+DEFAULT_ICON_HOTKEYS = [Keys.KEY_LALT]
 DEFAULT_POSITION = -1
 SEQUENTIAL_START = 0 # or for example, 'national_uk_female'
+
+
+def keyIsAny(key, keys):
+    keySets = [data if not isinstance(data, int) else (data,) for data in keys]
+    return (bool(keys) and any(key in keySet for keySet in keySets))
 
 
 def getInt(n, default):
@@ -113,6 +120,8 @@ class ConfigInterface(SimpleConfigInterface):
         self.data = {
             'enabled': True,
             'icon_enabled': True,
+            'icon_hotkeys': DEFAULT_ICON_HOTKEYS,
+            'icon_on_alt': False,
             'icon_x': DEFAULT_POSITION,
             'icon_y': DEFAULT_POSITION,
             'music': 0,
@@ -121,6 +130,8 @@ class ConfigInterface(SimpleConfigInterface):
             'voice_do_nothing_if_special': True,
             'voice_use_tank_nation': False,
         }
+
+        self._iconOnAltCB = None
 
         self._set_default_voice_alt_conf()
         super(ConfigInterface, self).init()
@@ -184,7 +195,9 @@ class ConfigInterface(SimpleConfigInterface):
             self.tb.createOptions(
                 'music', [self.i18n['UI_setting_music_%s' % music_mode.name] for music_mode in self.music_modes]),
             self.tb.createControl('icon_enabled'),
-            self.tb.createLabel('voiceAlt_weights'),
+            self.tb.createControl('icon_on_alt'),
+            self.tb.createHotKey('icon_hotkeys'),
+#            self.tb.createLabel('voiceAlt_weights'),
             self.tb.createSlider('voiceAlt_0_weight', 0, self.NUM_VOICE_ALTS * self.NUM_VOICE_ALTS, 1,
                                  button={
                                      'text': self.i18n['UI_setting_button_test'],
@@ -230,9 +243,31 @@ class ConfigInterface(SimpleConfigInterface):
             self.playPreviewSound(mode)
 
 
+    def onHotkeyPressed(self, event):
+        if not self.data['enabled'] or not self.data['icon_on_alt'] or self._iconOnAltCB is None:
+            return
+
+        hotkeys = self.data['icon_hotkeys']
+
+        key = event.key
+        if key == Keys.KEY_LALT or key == Keys.KEY_RALT:
+            key = -1
+        elif key == Keys.KEY_LCONTROL or key == Keys.KEY_RCONTROL:
+            key = -2
+        elif key == Keys.KEY_LSHIFT or key == Keys.KEY_RSHIFT:
+            key = -3
+
+        if keyIsAny(key, hotkeys):
+            self._iconOnAltCB(event.isKeyDown())
+
+
     def onMSADestroy(self):
         self.readData()
         self.clearPreviewSound()
+
+
+    def setIconVisibleHotkeyCallback(self, cb):
+        self._iconOnAltCB = cb
 
 
     def _get_voice_mode(self, mode_key=None):
