@@ -1,6 +1,6 @@
 _modID = '%(mod_ID)s'
 _date = '%(file_compile_date)s'
-_version = '2.3.0 ' + _date
+_version = '2.3.2 ' + _date
 
 from gui.battle_control import avatar_getter
 from gui.game_control.special_sound_ctrl import SpecialSoundCtrl

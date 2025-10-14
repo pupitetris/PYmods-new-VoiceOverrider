@@ -353,6 +353,7 @@ VOICE_MODES = [
     VoiceMode('gup_alice', 'gup_alice', lang='EN', female=True, icon='girls_und_panzer_alice'),
     VoiceMode('gup_darjeeling', 'gup_darjeeling', lang='UK', female=True, icon='girls_und_panzer_darjeeling'),
     VoiceMode('gup_crew_25', 'gup_crew_25', lang='UK', female=True, icon=['girls_und_panzer_orange', 'girls_und_panzer_assam', 'girls_und_panzer_rosehip', 'girls_und_panzer_rukuriri']),
+    VoiceMode('gup_kei', 'gup_kei', lang='EN', female=True, icon='girls_und_panzer_kei'),
     VoiceMode('ermelinda24_en', 'ermelinda24_en', lang='EN', female=True, icon='wt_2024_ermelinda'),
     VoiceMode('ermelinda24_cn', 'ermelinda24_cn', lang='ZH_CH', female=True, icon='wt_2024_ermelinda', enabled=False),
     VoiceMode('krieger24_en', 'krieger24_en', lang='EN', icon='wt_2024_vonkrieger'),
@@ -365,6 +366,16 @@ VOICE_MODES = [
     VoiceMode('bMeng24', 'bMeng24', lang='ZH_CH', icon='wt_CN2024_bmeng', enabled=False),
     VoiceMode('yiTuanTuan24', 'yiTuanTuan24', lang='ZH_CH', female=True, icon='wt_CN2024_yituantuan', enabled=False),
     VoiceMode('saoNian24', 'saoNian24', lang='ZH_CH', icon='wt_CN2024_saonian', enabled=False),
+    VoiceMode('hw25_Mailand_de', 'hw25_Mailand_de', lang='DE', icon='hw25_Mailand', icon_ny='crewSkins/ny25_blogger04'),
+    VoiceMode('hw25_MouzAkrobat_de', 'hw25_MouzAkrobat_de', lang='DE', icon='hw25_MouzAkrobat', icon_ny='crewSkins/ny25_blogger14'),
+    VoiceMode('hw25_Quickybaby_en', 'hw25_Quickybaby_en', lang='UK', icon='hw25_Quickybaby', icon_ny='crewSkins/ny25_blogger03'),
+    VoiceMode('hw25_Skill4ltu_en', 'hw25_Skill4ltu_en', lang='RU', icon='hw25_Skill4ltu', icon_ny='crewSkins/ny25_blogger01'),
+    VoiceMode('hw25_full_crew_en', 'hw25_full_crew_en', icon=['hw25_Mailand', 'hw25_MouzAkrobat', 'hw25_Quickybaby', 'hw25_Skill4ltu']),
+    VoiceMode('hw25_DaKun_cn', 'hw25_DaKun_cn', lang='ZH_CH', icon='hw25_DaKun_CN'),
+    VoiceMode('hw25_LuJun_cn', 'hw25_LuJun_cn', lang='ZH_CH', icon='hw25_LuJun_CN'),
+    VoiceMode('hw25_Panchezhang_cn', 'hw25_Panchezhang_cn', lang='ZH_CH', icon='hw25_Panchezhang_CN'),
+    VoiceMode('hw25_Titi_cn', 'hw25_Titi_cn', lang='ZH_CH', female=True, icon='hw25_Titi_CN'),
+    VoiceMode('hw25_full_crewCN_cn', 'hw25_full_crewCN_cn', lang='ZH_CH', icon=['hw25_DaKun_CN', 'hw25_LuJun_CN', 'hw25_Panchezhang_CN', 'hw25_Titi_CN']),
 ]
 
 
