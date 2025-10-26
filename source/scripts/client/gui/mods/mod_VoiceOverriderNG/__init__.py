@@ -1,6 +1,6 @@
 _modID = '%(mod_ID)s'
 _date = '%(file_compile_date)s'
-_version = '2.3.2 ' + _date
+_version = '2.3.4 ' + _date
 
 from constants import ARENA_GUI_TYPE
 from gui.battle_control import avatar_getter
