@@ -2,6 +2,7 @@ _modID = '%(mod_ID)s'
 _date = '%(file_compile_date)s'
 _version = '2.3.2 ' + _date
 
+from constants import ARENA_GUI_TYPE
 from gui.battle_control import avatar_getter
 from gui.game_control.special_sound_ctrl import SpecialSoundCtrl
 from gui.Scaleform.daapi.view.meta import DamagePanelMeta
@@ -19,13 +20,21 @@ from .config_interface import ConfigInterface
 from .vo_gui import VoGUI
 
 
+def check_arena(config, arena):
+    if not config.data['enabled'] or arena is None or \
+       arena.guiType not in (ARENA_GUI_TYPE.EPIC_RANDOM, ARENA_GUI_TYPE.RANDOM):
+        return False
+    return True
+
+
 @overrideMethod(SpecialSoundCtrl, 'setPlayerVehicle')
 def new_setPlayerVehicle(base, self, vehiclePublicInfo, isPlayerVehicle, *args, **kwargs):
     global g_gui
+    global g_config
 
     base(self, vehiclePublicInfo, isPlayerVehicle, *args, **kwargs)
     arena = avatar_getter.getArena()
-    if not g_config.data['enabled'] or arena is None:
+    if not check_arena(g_config, arena):
         return
 
     vehicle_descr = VehicleDescr(vehiclePublicInfo.compDescr)
@@ -55,7 +64,11 @@ def on_startGUI(*_, **__):
     global g_gui
     global g_config
 
-    if not g_config.data['enabled'] or not g_config.iconEnabled():
+    arena = avatar_getter.getArena()
+    if not check_arena(g_config, arena):
+        return
+
+    if not g_config.iconEnabled():
         return
 
     g_config.setIconVisibleHotkeyCallback(on_IconVisibleHotkey)
