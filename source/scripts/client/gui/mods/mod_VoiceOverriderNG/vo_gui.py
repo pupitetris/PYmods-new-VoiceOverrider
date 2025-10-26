@@ -74,14 +74,26 @@ class VoGUI(object):
         g_guiFlash.updateComponent(self.ID, {'visible': is_visible, 'alpha': alpha}, params)
 
 
-    def setPosition(self, x, y):
-        if x < 0 or y < 0:
-            screenWidth, screenHeight = GUI.screenResolution()
-            if x < 0:
-                x = screenWidth // 4
-            if y < 0:
-                y = screenHeight - ICON_HEIGHT
+    def setPosition(self, req_x=-1, req_y=-1):
+        screenWidth, screenHeight = GUI.screenResolution()
+        x = req_x
+        y = req_y
+
+        if req_x < 0: # default value requested
+            x = screenWidth // 4
+
+        if req_y < 0: # default value requested
+            y = screenHeight - ICON_HEIGHT
+
+        if x + ICON_WIDTH > screenWidth:
+            x = screenWidth - ICON_WIDTH
+
+        if y + ICON_HEIGHT > screenHeight:
+            y = screenHeight - ICON_HEIGHT
+
+        if x != req_x or y != req_y:
             self._updatePositionHook(x, y)
+
         g_guiFlash.updateComponent(self.ID, {'x': x, 'y': y})
 
 
