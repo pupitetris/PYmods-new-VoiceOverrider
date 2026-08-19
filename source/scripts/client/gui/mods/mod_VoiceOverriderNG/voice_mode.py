@@ -59,9 +59,15 @@ def _today_is_newyears():
     return datetime.date(now.year, 12, 1) <= now.date() <= datetime.date(now.year + 1, 1, 8)
 
 
+# WoT anniversary (August)
+def _today_is_birthday():
+    now = datetime.datetime.now()
+    return datetime.date(now.year, 8, 12) <= now.date() <= datetime.date(now.year, 8, 31)
+
+
 class VoiceMode(object):
     def __init__(self, name, languageMode=None, national=False, lang=None, female=False,
-                 synthetic=False, icon=None, icon_ny=None, label=None, short_label=None,
+                 synthetic=False, icon=None, icon_ny=None, icon_bd=None, label=None, short_label=None,
                  enabled=True, idx=None):
 
         self.idx = _castOrNone(idx, int)
@@ -76,10 +82,15 @@ class VoiceMode(object):
         self.female = _cast(female, bool)
         self.synthetic = _cast(synthetic, bool)
 
+        if type(icon) == bool and icon:
+            icon = self.name
+
         self.icon = icon
         if icon is not None and type(icon) != str and type(icon) != list:
             raise TypeError('icon ' + str(icon) + ' expected as str, list or None but is ' + str(type(icon)))
+
         self.icon_ny = _castOrNone(icon_ny, str)
+        self.icon_bd = _castOrNone(icon_bd, str)
 
         self.label = _castOrNone(label, str)
         self.short_label = _castOrNone(short_label, str)
@@ -162,9 +173,10 @@ class VoiceMode(object):
 
 
     def get_icon(self):
-        if _today_is_newyears():
-            if self.icon_ny is not None:
-                return self.icon_ny
+        if _today_is_newyears() and self.icon_ny is not None:
+            return self.icon_ny
+        if _today_is_birthday() and self.icon_bd is not None:
+            return self.icon_bd
         return self.icon
 
 
