@@ -376,6 +376,7 @@ VOICE_MODES = [
     VoiceMode('tankmen_bp20_8', 'tankmen_bp20_8', lang='EN', icon=True),
     VoiceMode('tankmen_bp20_9', 'tankmen_bp20_9', lang='EN', icon=True),
     VoiceMode('tankmen_mtlb1_1', 'tankmen_mtlb1_1', lang='ZH_CH', icon=True),
+    VoiceMode('tankmen_mtlb4_1', 'tankmen_mtlb4_1', lang='ZH_CH', icon=True),
     VoiceMode('MartyVole', 'MartyVole', lang='DE', icon='Marty_Vole', icon_ny='crewSkins/ny25_blogger12', icon_bd='crewSkins/narozeninovymarty'),
     VoiceMode('cygan', 'cygan', lang='PL', icon='polish_commander', icon_ny='crewSkins/ny25_blogger11', icon_bd='crewSkins/birthdaycygan'),
     VoiceMode('kirk', 'kirk', icon='cosm02_Kirk'),
@@ -416,6 +417,8 @@ VOICE_MODES = [
     VoiceMode('hw25_Panchezhang_cn', 'hw25_Panchezhang_cn', lang='ZH_CH', icon='hw25_Panchezhang_CN'),
     VoiceMode('hw25_Titi_cn', 'hw25_Titi_cn', lang='ZH_CH', female=True, icon='hw25_Titi_CN'),
     VoiceMode('hw25_full_crewCN_cn', 'hw25_full_crewCN_cn', lang='ZH_CH', icon=['hw25_DaKun_CN', 'hw25_LuJun_CN', 'hw25_Panchezhang_CN', 'hw25_Titi_CN']),
+    VoiceMode('jager_mailand', 'jager_mailand', lang='DE', icon='jager_mailand', icon_ny='crewSkins/ny25_blogger04', icon_bd='crewSkins/bertdaymailand'),
+    VoiceMode('jager_mouzAkrobat', 'jager_mouzAkrobat', lang='DE', icon='jager_mouzakrobat', icon_ny='crewSkins/ny25_blogger14', icon_bd='crewSkins/birthdaymouzakrobat'),
 ]
 
 
